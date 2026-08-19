@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NaijaPulse — Campus Life & Power Logistics Hub</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 10% 20%, rgba(13, 148, 136, 0.08) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+                  #0a0f18;
+      color: #f1f5f9;
+      min-height: 100vh;
+    }
+    
+    .display-font {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .glass-panel {
+      background: rgba(18, 26, 43, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    .glass-input {
+      background: rgba(10, 15, 26, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s ease-in-out;
+    }
+
+    .glass-input:focus {
+      outline: none;
+      border-color: #10b981;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a0f18;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+
+  <!-- ================= PRELOADER ================= -->
+  <div id="preloader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#070b12] transition-opacity duration-700 ease-out">
+    <div class="relative flex items-center justify-center mb-4">
+      <div class="w-16 h-16 rounded-full border-4 border-emerald-500/20 border-t-emerald-400 animate-spin"></div>
+      <div class="absolute text-emerald-400 font-bold display-font text-lg">₦</div>
+    </div>
+    <p class="text-slate-300 font-medium tracking-wide display-font text-sm animate-pulse">OPTIMIZING CAMPUS UTILITIES...</p>
+  </div>
+
+  <!-- ================= TOP NAV ================= -->
+  <header class="sticky top-0 z-40 w-full glass-panel border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-emerald-500/20">
+          <i data-lucide="zap" class="w-5 h-5 text-slate-950 stroke-[2.5]"></i>
+        </div>
+        <div>
+          <span class="text-xl font-bold tracking-tight text-white display-font">Naija<span class="text-emerald-400">Pulse</span></span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 ml-2">v1.0 Local</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <button onclick="resetAllData()" class="text-xs text-slate-400 hover:text-rose-400 transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 hover:border-rose-500/30">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          <span>Reset Day</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <!-- Hero Banner -->
+    <section class="glass-panel p-6 sm:p-8 rounded-3xl relative overflow-hidden">
+      <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold display-font tracking-tight text-white">
+            Daily Survival & Logistics Cockpit
+          </h1>
+          <p class="text-slate-400 text-sm mt-1 max-w-xl">
+            Real-time tracking of fuel burn rates, unpredictable NEPA uptime, campus transit fares, and food allocations in one view.
+          </p>
+        </div>
+        
+        <!-- Live Quick Stats -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div class="glass-input p-3 rounded-2xl">
+            <span class="text-[11px] text-slate-400 block font-medium">Est. Day Spend</span>
+            <span id="heroTotalSpend" class="text-lg font-bold text-emerald-400 display-font">₦0.00</span>
+          </div>
+          <div class="glass-input p-3 rounded-2xl">
+            <span class="text-[11px] text-slate-400 block font-medium">Power Status</span>
+            <span id="heroPowerStatus" class="text-sm font-bold text-amber-400 flex items-center gap-1 mt-0.5">
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Generator
+            </span>
+          </div>
+          <div class="glass-input p-3 rounded-2xl col-span-2 sm:col-span-1">
+            <span class="text-[11px] text-slate-400 block font-medium">Urgent 2k Fund</span>
+            <span id="heroEmergencyFund" class="text-lg font-bold text-white display-font">₦0.00</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Core Interactive Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      <!-- LEFT 2 COLS: The Problem Solvers -->
+      <div class="lg:col-span-2 space-y-8">
+        
+        <!-- MODULE 1: Gen & NEPA Power Runtime Calc -->
+        <section class="glass-panel p-6 rounded-3xl space-y-6">
+          <div class="flex items-center justify-between border-b border-white/5 pb-4">
+            <div class="flex items-center gap-3">
+              <div class="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                <i data-lucide="fuel" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h2 class="font-bold text-lg text-white display-font">Gen Fuel & Power Runtime</h2>
+                <p class="text-xs text-slate-400">Estimate how long your fuel will run your appliances vs PHCN cost</p>
+              </div>
+            </div>
+            <select id="gridStatusToggle" onchange="updatePowerCalc()" class="glass-input text-xs text-slate-200 px-3 py-1.5 rounded-xl">
+              <option value="gen">Running on Gen</option>
+              <option value="nepa">NEPA is Active</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Fuel Bought (Liters)</label>
+              <input type="number" id="fuelLiters" value="5" min="0" step="0.5" oninput="updatePowerCalc()" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-white font-medium text-sm" placeholder="e.g. 5">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Fuel Price / Liter (₦)</label>
+              <input type="number" id="fuelPrice" value="850" min="0" step="10" oninput="updatePowerCalc()" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-white font-medium text-sm" placeholder="e.g. 850">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Gen Type / Consumption</label>
+              <select id="genType" onchange="updatePowerCalc()" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-white text-sm">
+                <option value="0.7">Small "I-pass-my-neighbor" (0.7L/hr)</option>
+                <option value="1.2" selected>Medium Tiger/Sumec (1.2L/hr)</option>
+                <option value="2.0">Heavy 3.5kVA+ (2.0L/hr)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Calculation Outputs -->
+          <div class="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/15 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Estimated Power Hours</span>
+              <div class="text-2xl font-black text-emerald-400 display-font mt-0.5" id="genHoursOutput">4.2 Hours</div>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Total Fuel Cost</span>
+              <div class="text-2xl font-black text-white display-font mt-0.5" id="fuelCostOutput">₦4,250.00</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MODULE 2: Campus Commute & Daily Expenses -->
+        <section class="glass-panel p-6 rounded-3xl space-y-6">
+          <div class="flex items-center justify-between border-b border-white/5 pb-4">
+            <div class="flex items-center gap-3">
+              <div class="p-2.5 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                <i data-lucide="compass" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h2 class="font-bold text-lg text-white display-font">Daily Expense Allocator</h2>
+                <p class="text-xs text-slate-400">Log campus transport (Danfo/Keke), food, and printing costs</p>
+              </div>
+            </div>
+          </div>
+
+          <form id="expenseForm" onsubmit="addExpense(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <input type="text" id="expName" placeholder="Item (e.g. Keke to Gate, Lunch)" required class="glass-input sm:col-span-2 px-3.5 py-2.5 rounded-xl text-white text-sm placeholder:text-slate-500">
+            <input type="number" id="expAmount" placeholder="Amount (₦)" min="1" required class="glass-input px-3.5 py-2.5 rounded-xl text-white text-sm placeholder:text-slate-500">
+            <button type="submit" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm shadow-md shadow-emerald-500/20">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>Add</span>
+            </button>
+          </form>
+
+          <!-- Expense List Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="text-slate-400 text-xs uppercase border-b border-white/5">
+                <tr>
+                  <th class="py-2.5 px-2">Description</th>
+                  <th class="py-2.5 px-2 text-right">Cost (₦)</th>
+                  <th class="py-2.5 px-2 text-center w-16">Action</th>
+                </tr>
+              </thead>
+              <tbody id="expenseListBody" class="divide-y divide-white/5 text-slate-300">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT COL: Financial Buffer & Summary -->
+      <div class="space-y-8">
+        
+        <!-- MODULE 3: Urgent 2k Emergency Buffer -->
+        <section class="glass-panel p-6 rounded-3xl space-y-6">
+          <div class="flex items-center gap-3 border-b border-white/5 pb-4">
+            <div class="p-2.5 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
+              <i data-lucide="shield-alert" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h2 class="font-bold text-lg text-white display-font">"Urgent 2k" Safe Buffer</h2>
+              <p class="text-xs text-slate-400">Untouchable campus survival balance</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Target Buffer (₦)</label>
+              <input type="number" id="emergencyTarget" value="5000" min="0" step="500" oninput="saveAndRenderSummary()" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-white font-semibold text-sm">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Current Saved Buffer (₦)</label>
+              <input type="number" id="emergencyCurrent" value="2500" min="0" step="500" oninput="saveAndRenderSummary()" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-white font-semibold text-sm">
+            </div>
+
+            <!-- Progress Bar -->
+            <div>
+              <div class="flex justify-between text-xs mb-1.5 font-medium">
+                <span class="text-slate-400">Buffer Health</span>
+                <span id="emergencyPercent" class="text-purple-400">50%</span>
+              </div>
+              <div class="w-full h-2.5 rounded-full bg-slate-800 overflow-hidden">
+                <div id="emergencyBar" class="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full transition-all duration-300" style="width: 50%"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Quick Tips for Presentation -->
+        <section class="glass-panel p-6 rounded-3xl space-y-4 border border-emerald-500/20">
+          <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>Presentation Talking Points</span>
+          </div>
+          <ul class="text-xs text-slate-400 space-y-2.5 leading-relaxed">
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">•</span>
+              <span><strong>Problem Statement:</strong> Volatile fuel hikes and erratic power supply force students to gamble with daily budgets.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">•</span>
+              <span><strong>Tech Stack:</strong> Clean Vanilla JS DOM manipulation, Tailwind utility-first styling, and persistent <code>localStorage</code> database state.</span>
+            </li>
+          </ul>
+        </section>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    // --- Local Storage Keys ---
+    const STORAGE_KEY_EXPENSES = 'naijapulse_expenses';
+    const STORAGE_KEY_FUEL = 'naijapulse_fuel_data';
+    const STORAGE_KEY_EMERGENCY = 'naijapulse_emergency_data';
+
+    // --- State Variables ---
+    let expenses = JSON.parse(localStorage.getItem(STORAGE_KEY_EXPENSES)) || [
+      { id: 1, name: 'Campus Shuttle / Keke', amount: 300 },
+      { id: 2, name: 'Cafeteria Lunch (Rice & Egg)', amount: 1200 },
+      { id: 3, name: 'Departmental Handout Printout', amount: 500 }
+    ];
+
+    // --- Initialize Lucide Icons ---
+    lucide.createIcons();
+
+    // --- Preloader Handler ---
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const preloader = document.getElementById('preloader');
+        preloader.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => preloader.style.display = 'none', 700);
+      }, 500);
+    });
+
+    // --- Format Currency (₦) ---
+    function formatNaira(num) {
+      return '₦' + Number(num || 0).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // --- Power & Fuel Runtime Logic ---
+    function updatePowerCalc() {
+      const liters = parseFloat(document.getElementById('fuelLiters').value) || 0;
+      const price = parseFloat(document.getElementById('fuelPrice').value) || 0;
+      const burnRate = parseFloat(document.getElementById('genType').value) || 1.2;
+      const status = document.getElementById('gridStatusToggle').value;
+
+      const totalHours = burnRate > 0 ? (liters / burnRate).toFixed(1) : 0;
+      const totalCost = liters * price;
+
+      document.getElementById('genHoursOutput').innerText = `${totalHours} Hours`;
+      document.getElementById('fuelCostOutput').innerText = formatNaira(totalCost);
+
+      const heroStatus = document.getElementById('heroPowerStatus');
+      if (status === 'nepa') {
+        heroStatus.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> PHCN/NEPA Live';
+        heroStatus.className = 'text-sm font-bold text-emerald-400 flex items-center gap-1 mt-0.5';
+      } else {
+        heroStatus.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Running on Gen';
+        heroStatus.className = 'text-sm font-bold text-amber-400 flex items-center gap-1 mt-0.5';
+      }
+
+      // Cache Fuel settings
+      localStorage.setItem(STORAGE_KEY_FUEL, JSON.stringify({ liters, price, burnRate, status }));
+      saveAndRenderSummary();
+    }
+
+    // --- Expense Management ---
+    function renderExpenses() {
+      const tbody = document.getElementById('expenseListBody');
+      tbody.innerHTML = '';
+
+      if (expenses.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-center text-slate-500 text-xs">No daily expenses logged yet.</td></tr>`;
+        saveAndRenderSummary();
+        return;
+      }
+
+      expenses.forEach((item) => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-white/[0.02] transition-colors';
+        row.innerHTML = `
+          <td class="py-3 px-2 font-medium text-slate-200">${escapeHtml(item.name)}</td>
+          <td class="py-3 px-2 text-right font-semibold text-white display-font">${formatNaira(item.amount)}</td>
+          <td class="py-3 px-2 text-center">
+            <button onclick="removeExpense(${item.id})" class="text-slate-500 hover:text-rose-400 p-1 transition-colors">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      lucide.createIcons();
+      saveAndRenderSummary();
+    }
+
+    function addExpense(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById('expName');
+      const amountInput = document.getElementById('expAmount');
+
+      const name = nameInput.value.trim();
+      const amount = parseFloat(amountInput.value);
+
+      if (!name || isNaN(amount) || amount <= 0) return;
+
+      expenses.push({ id: Date.now(), name, amount });
+      localStorage.setItem(STORAGE_KEY_EXPENSES, JSON.stringify(expenses));
+
+      nameInput.value = '';
+      amountInput.value = '';
+      renderExpenses();
+    }
+
+    function removeExpense(id) {
+      expenses = expenses.filter(item => item.id !== id);
+      localStorage.setItem(STORAGE_KEY_EXPENSES, JSON.stringify(expenses));
+      renderExpenses();
+    }
+
+    // --- Overall Calculations & Emergency Buffer ---
+    function saveAndRenderSummary() {
+      const expTotal = expenses.reduce((acc, curr) => acc + curr.amount, 0);
+      const fuelLiters = parseFloat(document.getElementById('fuelLiters').value) || 0;
+      const fuelPrice = parseFloat(document.getElementById('fuelPrice').value) || 0;
+      const fuelTotal = fuelLiters * fuelPrice;
+
+      const grandTotal = expTotal + fuelTotal;
+      document.getElementById('heroTotalSpend').innerText = formatNaira(grandTotal);
+
+      // Emergency Fund Progress
+      const target = parseFloat(document.getElementById('emergencyTarget').value) || 1;
+      const current = parseFloat(document.getElementById('emergencyCurrent').value) || 0;
+      
+      const pct = Math.min(100, Math.round((current / target) * 100));
+      document.getElementById('emergencyPercent').innerText = `${pct}%`;
+      document.getElementById('emergencyBar').style.width = `${pct}%`;
+      document.getElementById('heroEmergencyFund').innerText = formatNaira(current);
+
+      localStorage.setItem(STORAGE_KEY_EMERGENCY, JSON.stringify({ target, current }));
+    }
+
+    // --- Helper to prevent XSS ---
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // --- Reset All Data ---
+    function resetAllData() {
+      if (confirm('Clear today\'s logged numbers and restart fresh?')) {
+        expenses = [];
+        localStorage.removeItem(STORAGE_KEY_EXPENSES);
+        document.getElementById('fuelLiters').value = '0';
+        updatePowerCalc();
+        renderExpenses();
+      }
+    }
+
+    // --- Initial Load Hydration ---
+    (function init() {
+      const savedFuel = JSON.parse(localStorage.getItem(STORAGE_KEY_FUEL));
+      if (savedFuel) {
+        document.getElementById('fuelLiters').value = savedFuel.liters;
+        document.getElementById('fuelPrice').value = savedFuel.price;
+        document.getElementById('genType').value = savedFuel.burnRate;
+        document.getElementById('gridStatusToggle').value = savedFuel.status;
+      }
+
+      const savedEmergency = JSON.parse(localStorage.getItem(STORAGE_KEY_EMERGENCY));
+      if (savedEmergency) {
+        document.getElementById('emergencyTarget').value = savedEmergency.target;
+        document.getElementById('emergencyCurrent').value = savedEmergency.current;
+      }
+
+      updatePowerCalc();
+      renderExpenses();
+    })();
+  </script>
+</body>
+</html>

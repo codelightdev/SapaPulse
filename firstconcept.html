@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SapaShield - Smart Campus Budget & Survival Planner</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              900: '#064e3b',
+            },
+            sapa: {
+              red: '#ef4444',
+              orange: '#f97316',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Glassmorphism Styles */
+    .glass-card {
+      background: rgba(18, 24, 38, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+    }
+    
+    .glass-card-hover {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card-hover:hover {
+      transform: translateY(-3px);
+      border-color: rgba(52, 211, 153, 0.3);
+      box-shadow: 0 25px 50px -12px rgba(16, 185, 129, 0.15);
+    }
+
+    .glass-input {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f8fafc;
+      transition: all 0.2s ease;
+    }
+    .glass-input:focus {
+      outline: none;
+      border-color: #10b981;
+      background: rgba(15, 23, 42, 0.85);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+
+    /* Ambient Background Glow */
+    .ambient-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+      top: -150px;
+      right: -150px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .ambient-glow-2 {
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+      bottom: -100px;
+      left: -100px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Custom Preloader Transition */
+    #preloader {
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    #preloader.loaded {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* Pulse Indicator */
+    @keyframes subtlePulse {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    .status-pulse {
+      animation: subtlePulse 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+
+<body class="bg-[#0b0f19] text-slate-100 font-sans min-h-screen relative selection:bg-brand-500 selection:text-white">
+
+  <!-- Ambient Lighting Effects -->
+  <div class="ambient-glow"></div>
+  <div class="ambient-glow-2"></div>
+
+  <!-- Preloader Screen -->
+  <div id="preloader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0b0f19]">
+    <div class="relative flex items-center justify-center">
+      <div class="w-20 h-20 border-4 border-emerald-500/20 border-t-emerald-400 rounded-full animate-spin"></div>
+      <i class="fa-solid fa-shield-halved text-2xl text-emerald-400 absolute"></i>
+    </div>
+    <p class="mt-6 text-emerald-400 font-semibold tracking-wider text-sm uppercase animate-pulse">
+      Initializing SapaShield Engine...
+    </p>
+    <span class="text-xs text-slate-500 mt-1">Calibrating Nigerian Campus Economy</span>
+  </div>
+
+  <!-- Navigation -->
+  <header class="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-[#0b0f19]/80 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white shadow-lg shadow-emerald-900/40">
+          <i class="fa-solid fa-shield-cat text-lg"></i>
+        </div>
+        <div>
+          <span class="text-lg font-bold tracking-tight text-white flex items-center gap-1">
+            Sapa<span class="text-brand-400">Shield</span>
+          </span>
+          <span class="text-[10px] block text-slate-400 -mt-1 font-medium">Campus Survival OS</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button onclick="resetBudgetPlan()" class="text-xs text-slate-400 hover:text-red-400 px-3 py-1.5 rounded-lg border border-slate-700/60 hover:border-red-500/40 transition">
+          <i class="fa-solid fa-arrows-rotate mr-1.5"></i> Reset All Data
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10 space-y-8">
+    
+    <!-- Hero / Metrics Dashboard -->
+    <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      
+      <!-- Balance Card -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-brand-400">
+        <div class="flex justify-between items-center text-slate-400 text-xs font-semibold">
+          <span>REMAINING ALLOWANCE</span>
+          <i class="fa-solid fa-wallet text-brand-400 text-base"></i>
+        </div>
+        <div class="mt-3">
+          <div class="text-2xl lg:text-3xl font-extrabold text-white" id="statRemainingBalance">₦0.00</div>
+          <p class="text-xs text-slate-400 mt-1" id="statInitialBudget">Initial: ₦0.00</p>
+        </div>
+      </div>
+
+      <!-- Daily Safe-Spend Limit -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-blue-400">
+        <div class="flex justify-between items-center text-slate-400 text-xs font-semibold">
+          <span>SAFE DAILY SPEND</span>
+          <i class="fa-solid fa-calculator text-blue-400 text-base"></i>
+        </div>
+        <div class="mt-3">
+          <div class="text-2xl lg:text-3xl font-extrabold text-blue-400" id="statDailyLimit">₦0.00</div>
+          <p class="text-xs text-slate-400 mt-1" id="statDaysRemaining">Over 0 days remaining</p>
+        </div>
+      </div>
+
+      <!-- Sapa Threat Level -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-amber-400">
+        <div class="flex justify-between items-center text-slate-400 text-xs font-semibold">
+          <span>SAPA RISK INDEX</span>
+          <i class="fa-solid fa-triangle-exclamation text-amber-400 text-base"></i>
+        </div>
+        <div class="mt-3">
+          <div class="text-xl font-bold flex items-center gap-2" id="statSapaLevel">
+            <span class="h-3 w-3 rounded-full bg-emerald-400 inline-block"></span>
+            <span>Stable</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1" id="statBurnRate">Burn rate: Normal</p>
+        </div>
+      </div>
+
+      <!-- Essential Survival Days -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 border-l-4 border-l-purple-400">
+        <div class="flex justify-between items-center text-slate-400 text-xs font-semibold">
+          <span>EMERGENCY RUNWAY</span>
+          <i class="fa-solid fa-bowl-rice text-purple-400 text-base"></i>
+        </div>
+        <div class="mt-3">
+          <div class="text-2xl lg:text-3xl font-extrabold text-purple-300" id="statRunwayDays">0 Days</div>
+          <p class="text-xs text-slate-400 mt-1">If only garri/staples consumed</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- App Engine: 2-Column Workstation -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Left Column: Input Forms & Budget Configuration (5 Cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <!-- Budget Setup Component -->
+        <div class="glass-card rounded-2xl p-6">
+          <h2 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-sliders text-brand-400"></i> Semester/Monthly Setup
+          </h2>
+          <form id="setupForm" class="space-y-4" onsubmit="handleBudgetSetup(event)">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Total Available Pocket Money (₦)</label>
+              <input type="number" id="inputTotalBudget" required min="100" placeholder="e.g. 50000" class="w-full px-4 py-2.5 rounded-xl text-sm glass-input">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Duration (Days)</label>
+                <input type="number" id="inputDurationDays" required min="1" max="180" placeholder="e.g. 30" class="w-full px-4 py-2.5 rounded-xl text-sm glass-input">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Off-Campus Dues Reserve (₦)</label>
+                <input type="number" id="inputDuesReserve" min="0" placeholder="e.g. NEPA/Pumping" class="w-full px-4 py-2.5 rounded-xl text-sm glass-input">
+              </div>
+            </div>
+
+            <button type="submit" class="w-full mt-2 py-3 px-4 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-semibold transition flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20">
+              <i class="fa-solid fa-floppy-disk"></i> Save & Calibrate Plan
+            </button>
+          </form>
+        </div>
+
+        <!-- Quick Expense Logger -->
+        <div class="glass-card rounded-2xl p-6">
+          <h2 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+            <i class="fa-solid fa-receipt text-brand-400"></i> Log Instant Campus Expense
+          </h2>
+          <form id="expenseForm" class="space-y-4" onsubmit="handleExpenseLog(event)">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Description / Purpose</label>
+              <input type="text" id="expenseDesc" required placeholder="e.g. Mama Put Jollof Rice / Handout Printout" class="w-full px-4 py-2.5 rounded-xl text-sm glass-input">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Amount (₦)</label>
+                <input type="number" id="expenseAmount" required min="10" placeholder="e.g. 1200" class="w-full px-4 py-2.5 rounded-xl text-sm glass-input">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Expense Category</label>
+                <select id="expenseCategory" class="w-full px-4 py-2.5 rounded-xl text-sm glass-input bg-[#0b1322]">
+                  <option value="Mama Put / Food">Mama Put / Food</option>
+                  <option value="Hostel Cooked Meal">Cooking Foodstuff</option>
+                  <option value="Campus Shuttle / Drop">Transportation</option>
+                  <option value="Handouts / Practical Fee">Dept / Academics</option>
+                  <option value="Data Subscription">Internet / Night Sub</option>
+                  <option value="Hostel Dues / Gen Fuel">Hostel Utilities</option>
+                  <option value="Emergency Misc">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full py-3 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-sm font-semibold border border-slate-700 transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-plus"></i> Deduct from Balance
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Ledger, Insights & Sapa Survival Tips (7 Cols) -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Survival Advice & Insights Box -->
+        <div class="glass-card rounded-2xl p-5 flex items-start gap-4 border border-emerald-500/20">
+          <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 mt-1">
+            <i class="fa-solid fa-lightbulb text-lg"></i>
+          </div>
+          <div class="space-y-1">
+            <h4 class="text-sm font-bold text-white" id="adviceHeading">Campus Survival Intelligence</h4>
+            <p class="text-xs text-slate-400 leading-relaxed" id="adviceBody">
+              Set up your allowance to unlock predictive insights on cook-vs-buy balance and runway projections.
+            </p>
+          </div>
+        </div>
+
+        <!-- Expense History Database Table -->
+        <div class="glass-card rounded-2xl overflow-hidden">
+          <div class="p-5 border-b border-slate-800 flex justify-between items-center">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-list text-brand-400"></i> Transaction Ledger
+            </h3>
+            <span class="text-xs text-slate-400" id="txCountBadge">0 Records</span>
+          </div>
+
+          <div class="overflow-x-auto max-h-[350px] overflow-y-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-900/60 text-slate-400 uppercase tracking-wider sticky top-0">
+                <tr>
+                  <th class="px-5 py-3 font-semibold">Item</th>
+                  <th class="px-5 py-3 font-semibold">Category</th>
+                  <th class="px-5 py-3 font-semibold">Cost</th>
+                  <th class="px-5 py-3 font-semibold">Date</th>
+                  <th class="px-5 py-3 font-semibold text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="ledgerTableBody" class="divide-y divide-slate-800/60 text-slate-300">
+                <!-- Dynamic Ledger Elements Injected Here -->
+              </tbody>
+            </table>
+            
+            <div id="emptyState" class="py-12 text-center text-slate-500">
+              <i class="fa-regular fa-folder-open text-3xl mb-2"></i>
+              <p class="text-xs">No expenses recorded for this session yet.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Application Logic & Local Database (localStorage) Operations -->
+  <script>
+    // --- DATABASE SCHEMA DEFAULTS ---
+    const STORAGE_KEY_BUDGET = 'sapashield_budget_state';
+    const STORAGE_KEY_LEDGER = 'sapashield_ledger_entries';
+
+    let appState = {
+      initialBudget: 0,
+      daysTotal: 30,
+      duesReserve: 0,
+      startDate: new Date().toISOString()
+    };
+
+    let ledger = [];
+
+    // --- INITIALIZATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      loadDatabase();
+      renderDashboard();
+
+      // Dismiss Preloader with smooth fadeout
+      setTimeout(() => {
+        const preloader = document.getElementById('preloader');
+        if (preloader) {
+          preloader.classList.add('loaded');
+        }
+      }, 750);
+    });
+
+    // --- STORAGE & DB CONTROLLERS ---
+    function loadDatabase() {
+      const savedState = localStorage.getItem(STORAGE_KEY_BUDGET);
+      const savedLedger = localStorage.getItem(STORAGE_KEY_LEDGER);
+
+      if (savedState) {
+        appState = JSON.parse(savedState);
+        document.getElementById('inputTotalBudget').value = appState.initialBudget || '';
+        document.getElementById('inputDurationDays').value = appState.daysTotal || '';
+        document.getElementById('inputDuesReserve').value = appState.duesReserve || '';
+      }
+
+      if (savedLedger) {
+        ledger = JSON.parse(savedLedger);
+      }
+    }
+
+    function persistState() {
+      localStorage.setItem(STORAGE_KEY_BUDGET, JSON.stringify(appState));
+    }
+
+    function persistLedger() {
+      localStorage.setItem(STORAGE_KEY_LEDGER, JSON.stringify(ledger));
+    }
+
+    // --- EVENT HANDLERS ---
+    function handleBudgetSetup(event) {
+      event.preventDefault();
+      const budget = parseFloat(document.getElementById('inputTotalBudget').value) || 0;
+      const days = parseInt(document.getElementById('inputDurationDays').value) || 30;
+      const dues = parseFloat(document.getElementById('inputDuesReserve').value) || 0;
+
+      if (budget <= 0) {
+        alert('Please enter a valid pocket money amount');
+        return;
+      }
+
+      appState = {
+        initialBudget: budget,
+        daysTotal: days,
+        duesReserve: dues,
+        startDate: new Date().toISOString()
+      };
+
+      persistState();
+      renderDashboard();
+    }
+
+    function handleExpenseLog(event) {
+      event.preventDefault();
+
+      if (appState.initialBudget <= 0) {
+        alert('Please calibrate your initial budget first before logging expenses.');
+        return;
+      }
+
+      const desc = document.getElementById('expenseDesc').value.trim();
+      const amount = parseFloat(document.getElementById('expenseAmount').value) || 0;
+      const category = document.getElementById('expenseCategory').value;
+
+      if (!desc || amount <= 0) return;
+
+      const newEntry = {
+        id: Date.now(),
+        desc: desc,
+        amount: amount,
+        category: category,
+        timestamp: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
+      };
+
+      ledger.unshift(newEntry);
+      persistLedger();
+      
+      // Reset form fields
+      document.getElementById('expenseDesc').value = '';
+      document.getElementById('expenseAmount').value = '';
+
+      renderDashboard();
+    }
+
+    function deleteExpense(id) {
+      ledger = ledger.filter(item => item.id !== id);
+      persistLedger();
+      renderDashboard();
+    }
+
+    function resetBudgetPlan() {
+      if (confirm('Are you sure you want to reset all calculations and transaction history?')) {
+        localStorage.removeItem(STORAGE_KEY_BUDGET);
+        localStorage.removeItem(STORAGE_KEY_LEDGER);
+        appState = { initialBudget: 0, daysTotal: 30, duesReserve: 0, startDate: new Date().toISOString() };
+        ledger = [];
+        
+        document.getElementById('setupForm').reset();
+        document.getElementById('expenseForm').reset();
+        renderDashboard();
+      }
+    }
+
+    // --- PRESENTATION & COMPUTATION ENGINE ---
+    function renderDashboard() {
+      // Calculate Total Expenses
+      const totalSpent = ledger.reduce((acc, curr) => acc + curr.amount, 0);
+      const remainingBalance = Math.max(0, (appState.initialBudget - appState.duesReserve) - totalSpent);
+      
+      // Format Currency (Naira)
+      const formatNGN = (val) => '₦' + val.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      // Daily Limit
+      const safeDailySpend = appState.daysTotal > 0 ? (remainingBalance / appState.daysTotal) : 0;
+
+      // Update Metric Display
+      document.getElementById('statRemainingBalance').innerText = formatNGN(remainingBalance);
+      document.getElementById('statInitialBudget').innerText = `Initial: ${formatNGN(appState.initialBudget)} (Reserve: ${formatNGN(appState.duesReserve)})`;
+      document.getElementById('statDailyLimit').innerText = formatNGN(safeDailySpend);
+      document.getElementById('statDaysRemaining').innerText = `Over ${appState.daysTotal} planned days`;
+
+      // Runway Calculation (Benchmark: Garri/Staple emergency survival = ₦900/day)
+      const garriIndexDays = safeDailySpend > 0 ? Math.floor(remainingBalance / 900) : 0;
+      document.getElementById('statRunwayDays').innerText = `${garriIndexDays} Days`;
+
+      // Sapa Risk Calculation
+      const riskContainer = document.getElementById('statSapaLevel');
+      const burnRateText = document.getElementById('statBurnRate');
+      const adviceHeading = document.getElementById('adviceHeading');
+      const adviceBody = document.getElementById('adviceBody');
+
+      if (appState.initialBudget === 0) {
+        riskContainer.innerHTML = `<span class="h-3 w-3 rounded-full bg-slate-500 inline-block"></span><span class="text-slate-400">Unconfigured</span>`;
+        burnRateText.innerText = 'Burn rate: Awaiting Setup';
+      } else {
+        const spentPercentage = (totalSpent / (appState.initialBudget - appState.duesReserve)) * 100;
+        
+        if (spentPercentage < 40) {
+          riskContainer.innerHTML = `<span class="h-3 w-3 rounded-full bg-emerald-400 inline-block status-pulse"></span><span class="text-emerald-400">Low Threat (Oga Landlord)</span>`;
+          burnRateText.innerText = `Only ${spentPercentage.toFixed(1)}% spent`;
+          adviceHeading.innerText = "Financially Grounded";
+          adviceBody.innerText = "Your funds are healthy. Consider bulk-purchasing foodstuff (Garri, Rice, Beans) in main markets rather than mini-marts.";
+        } else if (spentPercentage >= 40 && spentPercentage < 75) {
+          riskContainer.innerHTML = `<span class="h-3 w-3 rounded-full bg-amber-400 inline-block status-pulse"></span><span class="text-amber-400">Moderate Sapa Alert</span>`;
+          burnRateText.innerText = `${spentPercentage.toFixed(1)}% depleted`;
+          adviceHeading.innerText = "Switch to Cooking Strategy";
+          adviceBody.innerText = "Mama-Put meals are accelerating your spend. Cook pot soups with roommates to split protein costs.";
+        } else {
+          riskContainer.innerHTML = `<span class="h-3 w-3 rounded-full bg-red-500 inline-block status-pulse"></span><span class="text-red-400">Critical Sapa Imminent</span>`;
+          burnRateText.innerText = `${spentPercentage.toFixed(1)}% depleted`;
+          adviceHeading.innerText = "Emergency Mode Engaged";
+          adviceBody.innerText = "Stick strictly to your daily limit of " + formatNGN(safeDailySpend) + ". Suspend campus drops/cabs and non-essential night data plans.";
+        }
+      }
+
+      // Render Transaction Ledger
+      const tableBody = document.getElementById('ledgerTableBody');
+      const emptyState = document.getElementById('emptyState');
+      const txBadge = document.getElementById('txCountBadge');
+
+      txBadge.innerText = `${ledger.length} Record${ledger.length === 1 ? '' : 's'}`;
+
+      if (ledger.length === 0) {
+        tableBody.innerHTML = '';
+        emptyState.classList.remove('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+        tableBody.innerHTML = ledger.map(item => `
+          <tr class="hover:bg-slate-800/30 transition">
+            <td class="px-5 py-3 font-medium text-white">${escapeHtml(item.desc)}</td>
+            <td class="px-5 py-3 text-slate-400">${item.category}</td>
+            <td class="px-5 py-3 text-emerald-400 font-semibold">${formatNGN(item.amount)}</td>
+            <td class="px-5 py-3 text-slate-500">${item.timestamp}</td>
+            <td class="px-5 py-3 text-right">
+              <button onclick="deleteExpense(${item.id})" class="text-slate-500 hover:text-red-400 transition" title="Delete Entry">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // Helper: Anti-XSS Sanitizer
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>

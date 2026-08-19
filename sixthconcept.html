@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SapaPulse AI | Clean Campus Financial OS</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"Space Grotesk"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+            },
+            accent: {
+              cyan: '#06b6d4',
+              violet: '#a855f7',
+              amber: '#f59e0b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      overflow-x: hidden;
+      background-color: #030712;
+    }
+
+    #webgl-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .clean-glass {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      transition: transform 0.15s ease-out, border-color 0.2s ease;
+      will-change: transform;
+    }
+
+    .clean-glass:hover {
+      border-color: rgba(52, 211, 153, 0.3);
+    }
+
+    .clean-input {
+      background: rgba(10, 15, 30, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f8fafc;
+      transition: all 0.2s ease;
+    }
+    .clean-input:focus {
+      outline: none;
+      border-color: #34d399;
+      background: rgba(10, 15, 30, 0.95);
+      box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2);
+    }
+
+    .tab-hidden { display: none !important; }
+    .tab-active { display: block !important; }
+
+    #cursor-light {
+      position: fixed;
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      transition: transform 0.08s ease-out, opacity 0.3s ease;
+    }
+
+    #preloader.loaded {
+      opacity: 0;
+      visibility: hidden;
+    }
+  </style>
+</head>
+
+<body class="text-slate-100 min-h-screen selection:bg-brand-500 selection:text-white flex flex-col justify-between pb-20 md:pb-0">
+
+  <!-- Interactive 3D Background -->
+  <canvas id="webgl-canvas"></canvas>
+  <div id="cursor-light"></div>
+
+  <!-- Perfectly Centered Preloader -->
+  <div id="preloader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#030712] p-4 text-center transition-all duration-500">
+    <div class="relative flex items-center justify-center">
+      <div class="w-16 h-16 border-4 border-slate-800 border-t-brand-400 rounded-full animate-spin"></div>
+      <i class="fa-solid fa-shapes text-xl text-brand-400 absolute"></i>
+    </div>
+    <div class="mt-4">
+      <h3 class="text-sm font-bold tracking-widest font-mono text-white">SAPAPULSE <span class="text-brand-400">AI</span></h3>
+      <p class="text-[11px] text-slate-400 mt-0.5 font-mono">Calibrating Campus Economics...</p>
+    </div>
+  </div>
+
+  <!-- Streamlined Responsive Header -->
+  <header class="sticky top-0 z-40 border-b border-slate-800/80 bg-[#030712]/90 backdrop-blur-xl">
+    <div class="max-w-6xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-2">
+        <div class="h-8 w-8 rounded-lg bg-gradient-to-tr from-brand-600 to-accent-cyan flex items-center justify-center shadow-md flex-shrink-0">
+          <i class="fa-solid fa-shapes text-white text-xs"></i>
+        </div>
+        <div>
+          <h1 class="text-sm sm:text-base font-bold text-white tracking-tight font-mono flex items-center gap-1">
+            SAPAPULSE <span class="text-[9px] px-1.5 py-0.2 rounded bg-brand-500/20 text-brand-400 border border-brand-500/30">AI</span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation Tabs -->
+      <nav class="hidden md:flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800 text-xs">
+        <button onclick="switchTab('tracker')" id="tabBtn-tracker" class="px-3 py-1.5 rounded-lg font-semibold bg-brand-500 text-white transition flex items-center gap-1.5">
+          <i class="fa-solid fa-wallet text-[11px]"></i> <span>Budget Space</span>
+        </button>
+        <button onclick="switchTab('advisor')" id="tabBtn-advisor" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <i class="fa-solid fa-brain text-[11px]"></i> <span>Ask SapaAI</span>
+        </button>
+        <button onclick="switchTab('simulator')" id="tabBtn-simulator" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <i class="fa-solid fa-utensils text-[11px]"></i> <span>Cook vs Buy</span>
+        </button>
+        <button onclick="switchTab('splitter')" id="tabBtn-splitter" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <i class="fa-solid fa-people-group text-[11px]"></i> <span>Hostel Pool</span>
+        </button>
+        <button onclick="switchTab('market')" id="tabBtn-market" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <i class="fa-solid fa-store text-[11px]"></i> <span>Market Radar</span>
+        </button>
+      </nav>
+
+      <!-- Header Action Controls -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <button onclick="toggle3DEffects()" id="btnToggle3D" class="px-2 py-1 rounded-lg border border-slate-700 bg-slate-800/80 text-[10px] font-mono text-brand-400 hover:bg-slate-700 transition" title="Toggle 3D FX">
+          <i class="fa-solid fa-cube mr-1"></i>3D: <span id="label3DStatus" class="font-bold">ON</span>
+        </button>
+
+        <button onclick="openSosModal()" class="px-2.5 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 text-[11px] font-bold font-mono transition flex items-center gap-1">
+          <i class="fa-solid fa-triangle-exclamation text-[10px]"></i> S.O.S
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Mobile Bottom Tab Navigation -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#070d1d]/95 backdrop-blur-lg border-t border-slate-800 px-2 py-1.5 flex justify-around items-center">
+    <button onclick="switchTab('tracker')" id="mobBtn-tracker" class="flex flex-col items-center gap-0.5 text-brand-400 text-[10px] font-medium p-1">
+      <i class="fa-solid fa-wallet text-sm"></i> Budget
+    </button>
+    <button onclick="switchTab('advisor')" id="mobBtn-advisor" class="flex flex-col items-center gap-0.5 text-slate-400 text-[10px] font-medium p-1">
+      <i class="fa-solid fa-brain text-sm"></i> SapaAI
+    </button>
+    <button onclick="switchTab('simulator')" id="mobBtn-simulator" class="flex flex-col items-center gap-0.5 text-slate-400 text-[10px] font-medium p-1">
+      <i class="fa-solid fa-utensils text-sm"></i> Simulator
+    </button>
+    <button onclick="switchTab('splitter')" id="mobBtn-splitter" class="flex flex-col items-center gap-0.5 text-slate-400 text-[10px] font-medium p-1">
+      <i class="fa-solid fa-people-group text-sm"></i> Pool
+    </button>
+    <button onclick="switchTab('market')" id="mobBtn-market" class="flex flex-col items-center gap-0.5 text-slate-400 text-[10px] font-medium p-1">
+      <i class="fa-solid fa-store text-sm"></i> Radar
+    </button>
+  </div>
+
+  <!-- Main View Container -->
+  <main class="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-6 flex-1 w-full relative">
+
+    <!-- ==================== TAB 1: BUDGET SPACE ==================== -->
+    <div id="view-tracker" class="tab-active space-y-4 sm:space-y-6">
+      
+      <!-- Streamlined KPI Metrics Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        
+        <div class="clean-glass p-3 sm:p-4 rounded-xl border-l-2 border-l-brand-400" data-tilt>
+          <span class="text-slate-400 text-[9px] sm:text-[10px] font-mono font-semibold uppercase block">Safe Net Balance</span>
+          <div class="text-base sm:text-2xl font-bold text-white mt-1 font-mono" id="kpiBalance">₦0.00</div>
+          <div class="text-[9px] sm:text-[10px] text-slate-400 mt-0.5 truncate">Base: <span id="kpiInitial" class="text-slate-200">₦0.00</span></div>
+        </div>
+
+        <div class="clean-glass p-3 sm:p-4 rounded-xl border-l-2 border-l-accent-cyan" data-tilt>
+          <span class="text-slate-400 text-[9px] sm:text-[10px] font-mono font-semibold uppercase block">Daily Safe Limit</span>
+          <div class="text-base sm:text-2xl font-bold text-accent-cyan mt-1 font-mono" id="kpiDailyLimit">₦0.00</div>
+          <div class="text-[9px] sm:text-[10px] text-slate-400 mt-0.5" id="kpiDaysCount">30 Days Planned</div>
+        </div>
+
+        <div class="clean-glass p-3 sm:p-4 rounded-xl border-l-2 border-l-accent-amber" data-tilt>
+          <span class="text-slate-400 text-[9px] sm:text-[10px] font-mono font-semibold uppercase block">Garri Index Runway</span>
+          <div class="text-base sm:text-2xl font-bold text-accent-amber mt-1 font-mono" id="kpiRunway">0 Days</div>
+          <div class="text-[9px] sm:text-[10px] text-slate-400 mt-0.5">Emergency buffer</div>
+        </div>
+
+        <div class="clean-glass p-3 sm:p-4 rounded-xl border-l-2 border-l-purple-400" data-tilt>
+          <span class="text-slate-400 text-[9px] sm:text-[10px] font-mono font-semibold uppercase block">Depletion Rate</span>
+          <div class="text-base sm:text-2xl font-bold text-purple-400 mt-1 font-mono" id="kpiBurn">0.0%</div>
+          <div class="text-[9px] sm:text-[10px] text-slate-400 mt-0.5" id="kpiStatusBadge">Safe Zone</div>
+        </div>
+
+      </div>
+
+      <!-- Main Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+        
+        <!-- Left Column: Forms -->
+        <div class="lg:col-span-5 space-y-4">
+          
+          <!-- Allowance Setup Form -->
+          <div class="clean-glass p-4 sm:p-5 rounded-2xl" data-tilt>
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+                <i class="fa-solid fa-sliders text-brand-400"></i> Setup Allowance
+              </h3>
+              <button onclick="quickFillDemo()" class="text-[11px] text-brand-400 hover:underline font-mono">Load Demo</button>
+            </div>
+
+            <form id="formBudget" onsubmit="saveBudget(event)" class="space-y-3 text-xs">
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Total Pocket Money (₦)</label>
+                <input type="number" id="inTotalBudget" required min="100" placeholder="e.g. 50000" class="w-full px-3 py-2 rounded-lg clean-input font-mono">
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-slate-300 font-medium mb-1">Days to Last</label>
+                  <input type="number" id="inDays" required min="1" max="180" placeholder="30" class="w-full px-3 py-2 rounded-lg clean-input font-mono">
+                </div>
+                <div>
+                  <label class="block text-slate-300 font-medium mb-1">Hostel Dues Reserve (₦)</label>
+                  <input type="number" id="inDues" min="0" placeholder="e.g. 5000" class="w-full px-3 py-2 rounded-lg clean-input font-mono">
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-lg font-bold transition shadow-sm">
+                Calibrate Budget Matrix
+              </button>
+            </form>
+          </div>
+
+          <!-- Instant Expense Deduction -->
+          <div class="clean-glass p-4 sm:p-5 rounded-2xl" data-tilt>
+            <h3 class="text-xs sm:text-sm font-bold text-white mb-3 flex items-center gap-1.5">
+              <i class="fa-solid fa-receipt text-accent-cyan"></i> Deduct Expense
+            </h3>
+
+            <form id="formExpense" onsubmit="addExpense(event)" class="space-y-3 text-xs">
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Description</label>
+                <input type="text" id="inExpDesc" required placeholder="e.g. Amala & Goat Meat" class="w-full px-3 py-2 rounded-lg clean-input">
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-slate-300 font-medium mb-1">Amount (₦)</label>
+                  <input type="number" id="inExpAmount" required min="1" placeholder="1800" class="w-full px-3 py-2 rounded-lg clean-input font-mono">
+                </div>
+                <div>
+                  <label class="block text-slate-300 font-medium mb-1">Category</label>
+                  <select id="inExpCat" class="w-full px-3 py-2 rounded-lg clean-input bg-[#0b1322]">
+                    <option value="Mama Put / Food">Food / Mama Put</option>
+                    <option value="Cooking Groceries">Cooking Groceries</option>
+                    <option value="Campus Shuttles">Campus Shuttles</option>
+                    <option value="Academics & Prints">Handouts / Books</option>
+                    <option value="Data Subscriptions">Data / Airtime</option>
+                    <option value="Gen Fuel / NEPA">Gen Fuel / Light</option>
+                    <option value="Emergency Misc">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold border border-slate-700 transition">
+                Record & Sync
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Visuals & Ledger -->
+        <div class="lg:col-span-7 space-y-4">
+          
+          <!-- Category Analytics Donut -->
+          <div class="clean-glass p-4 sm:p-5 rounded-2xl" data-tilt>
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+                <i class="fa-solid fa-chart-pie text-purple-400"></i> Spend Breakdown
+              </h3>
+              <span id="chartTotalBadge" class="text-[10px] font-mono text-slate-400">Total: ₦0.00</span>
+            </div>
+            <div class="h-40 w-full flex items-center justify-center">
+              <canvas id="expensePieChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Transaction Ledger -->
+          <div class="clean-glass rounded-2xl overflow-hidden" data-tilt>
+            <div class="p-3 sm:p-4 border-b border-slate-800 flex justify-between items-center">
+              <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+                <i class="fa-solid fa-list-check text-brand-400"></i> Ledger
+              </h3>
+              <div class="flex items-center gap-1.5">
+                <input type="text" id="tableFilter" oninput="renderLedger()" placeholder="Search..." class="text-[11px] px-2.5 py-1 rounded-lg clean-input w-28 sm:w-36 font-sans">
+                <button onclick="exportCSV()" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] border border-slate-700" title="Export CSV">
+                  <i class="fa-solid fa-download"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto max-h-48 overflow-y-auto">
+              <table class="w-full text-left text-[11px]">
+                <thead class="bg-slate-900/90 text-slate-400 uppercase font-mono sticky top-0">
+                  <tr>
+                    <th class="px-3 py-2">Item</th>
+                    <th class="px-3 py-2">Category</th>
+                    <th class="px-3 py-2">Cost</th>
+                    <th class="px-3 py-2">Date</th>
+                    <th class="px-3 py-2 text-right">Del</th>
+                  </tr>
+                </thead>
+                <tbody id="ledgerBody" class="divide-y divide-slate-800/60 text-slate-300">
+                  <!-- JS Injected -->
+                </tbody>
+              </table>
+              <div id="noDataState" class="py-8 text-center text-slate-500 text-xs font-mono">
+                No ledger transactions logged.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== TAB 2: ASK SAPAAI ADVISOR ==================== -->
+    <div id="view-advisor" class="tab-hidden space-y-4 max-w-2xl mx-auto">
+      <div class="clean-glass p-4 sm:p-6 rounded-2xl space-y-4" data-tilt>
+        
+        <div class="flex items-center gap-2.5 border-b border-slate-800 pb-3">
+          <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-accent-cyan to-brand-500 flex items-center justify-center text-white text-sm">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <div>
+            <h2 class="text-sm sm:text-base font-bold text-white font-mono">SapaAI Financial Advisor</h2>
+            <p class="text-[11px] text-slate-400">Contextual advice computed from your live balance.</p>
+          </div>
+        </div>
+
+        <!-- Quick Consultation Chips -->
+        <div class="space-y-1.5">
+          <span class="text-[10px] font-mono uppercase text-slate-400 font-semibold block">Quick Analysis:</span>
+          <div class="flex flex-wrap gap-1.5">
+            <button onclick="askAiPreset('evaluate')" class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/60 transition">
+              📊 Evaluate Budget Health
+            </button>
+            <button onclick="askAiPreset('food_strategy')" class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/60 transition">
+              🍲 Best Food Strategy
+            </button>
+            <button onclick="askAiPreset('cut_costs')" class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/60 transition">
+              ✂️ Priority Cutters
+            </button>
+          </div>
+        </div>
+
+        <!-- Consultation Output Box -->
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 min-h-[120px] flex items-start gap-2.5">
+          <i class="fa-solid fa-robot text-brand-400 text-sm mt-0.5"></i>
+          <div class="text-xs leading-relaxed text-slate-300" id="aiResponseArea">
+            Select a quick question or enter your budget in the Budget Space tab to get real-time recommendations.
+          </div>
+        </div>
+
+        <form onsubmit="handleCustomAiPrompt(event)" class="flex gap-2">
+          <input type="text" id="aiCustomPrompt" placeholder="Ask AI (e.g. 'How to manage textbook printing?')" class="flex-1 px-3 py-2 rounded-lg text-xs clean-input">
+          <button type="submit" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-lg text-xs font-bold transition">
+            Ask
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- ==================== TAB 3: COOK VS MAMA-PUT AI SIMULATOR ==================== -->
+    <div id="view-simulator" class="tab-hidden space-y-4 max-w-2xl mx-auto">
+      <div class="clean-glass p-4 sm:p-6 rounded-2xl" data-tilt>
+        <div class="text-center space-y-1 mb-4">
+          <h2 class="text-sm sm:text-base font-bold text-white font-mono">Cook vs. Mama-Put Simulator</h2>
+          <p class="text-xs text-slate-400">Calculate direct savings between cooking soup pots and buying canteen meals.</p>
+        </div>
+
+        <form id="simForm" onsubmit="runSimulation(event)" class="space-y-3 text-xs">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">Average Daily Canteen Spend (₦)</label>
+              <input type="number" id="simMamaDaily" required min="500" placeholder="e.g. 2500" class="w-full px-3 py-2 rounded-lg clean-input font-mono">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">Days to Forecast</label>
+              <input type="number" id="simDays" required min="1" max="60" placeholder="e.g. 14" class="w-full px-3 py-2 rounded-lg clean-input font-mono">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">Cost to Cook 1 Soup Pot (₦)</label>
+              <input type="number" id="simSoupCost" required min="1000" placeholder="e.g. 7000" class="w-full px-3 py-2 rounded-lg clean-input font-mono">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">Days One Soup Pot Lasts</label>
+              <input type="number" id="simPotDays" required min="1" max="14" placeholder="e.g. 5" class="w-full px-3 py-2 rounded-lg clean-input font-mono">
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-accent-amber to-brand-500 text-white rounded-lg font-bold transition">
+            Run Comparative Forecast
+          </button>
+        </form>
+
+        <div id="simResult" class="hidden mt-4 p-4 rounded-xl bg-slate-900/90 border border-accent-amber/30 space-y-3">
+          <div class="flex justify-between items-center">
+            <h4 class="text-xs font-bold text-accent-amber font-mono">Forecast Breakdown</h4>
+            <span id="simSavingsBadge" class="text-[10px] px-2 py-0.5 rounded bg-brand-500/20 text-brand-400 font-bold font-mono">Save ₦0.00</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+            <div class="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700">
+              <span class="text-slate-400 text-[10px] block">Canteen Total:</span>
+              <span class="font-bold text-red-400" id="simResMamaTotal">₦0.00</span>
+            </div>
+            <div class="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700">
+              <span class="text-slate-400 text-[10px] block">Cooking Total:</span>
+              <span class="font-bold text-brand-400" id="simResCookTotal">₦0.00</span>
+            </div>
+          </div>
+          <p id="simVerdictText" class="text-xs text-slate-300 leading-relaxed"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 4: HOSTEL POOL SPLITTER ==================== -->
+    <div id="view-splitter" class="tab-hidden space-y-4 max-w-2xl mx-auto">
+      <div class="clean-glass p-4 sm:p-6 rounded-2xl" data-tilt>
+        <div class="text-center space-y-1 mb-4">
+          <h2 class="text-sm sm:text-base font-bold text-white font-mono">Hostel Bill & Fuel Splitter</h2>
+          <p class="text-xs text-slate-400">Evenly split generator fuel, NEPA units, and bulk food pots.</p>
+        </div>
+
+        <form id="poolForm" onsubmit="computePool(event)" class="space-y-3 text-xs">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">Expense Title</label>
+              <input type="text" id="poolTitle" required placeholder="e.g. 20L Generator Fuel" class="w-full px-3 py-2 rounded-lg clean-input">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">Total Bill (₦)</label>
+              <input type="number" id="poolTotal" required min="1" placeholder="e.g. 22000" class="w-full px-3 py-2 rounded-lg clean-input font-mono">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 font-medium mb-1">Contributors (Comma Separated)</label>
+            <input type="text" id="poolNames" required placeholder="e.g. Tunde, Chinedu, Amina, Ibrahim" class="w-full px-3 py-2 rounded-lg clean-input">
+          </div>
+
+          <div>
+            <label class="block text-slate-300 font-medium mb-1">Receiving Account (Optional)</label>
+            <input type="text" id="poolAccount" placeholder="e.g. Opay: 8012345678 (Tunde)" class="w-full px-3 py-2 rounded-lg clean-input font-mono">
+          </div>
+
+          <button type="submit" class="w-full py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-lg font-bold transition">
+            Calculate Shares
+          </button>
+        </form>
+
+        <div id="poolResult" class="hidden mt-4 p-4 rounded-xl bg-slate-900/90 border border-brand-500/30 space-y-3">
+          <div class="flex justify-between items-center">
+            <h4 class="text-xs font-bold text-brand-400 font-mono" id="resPoolTitle">Split Summary</h4>
+            <span class="text-xs px-2 py-0.5 rounded bg-brand-500/20 text-brand-300 font-mono font-bold" id="resPerPerson">₦0 / person</span>
+          </div>
+          <p class="text-xs text-slate-300 font-mono" id="resParticipantsList"></p>
+          <button onclick="shareWhatsApp()" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+            <i class="fa-brands fa-whatsapp"></i> Share on WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 5: MARKET RADAR (AUTONOMOUS SYNC) ==================== -->
+    <div id="view-market" class="tab-hidden space-y-4 max-w-2xl mx-auto">
+      <div class="clean-glass p-4 sm:p-6 rounded-2xl" data-tilt>
+        <div class="flex justify-between items-center gap-2 mb-4">
+          <div>
+            <h2 class="text-sm sm:text-base font-bold text-white font-mono">Campus Foodstuff Inflation Radar</h2>
+            <p class="text-[11px] text-slate-400">Live staple price benchmarks across Nigerian university zones.</p>
+          </div>
+          <button onclick="syncMarketRadar()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[10px] font-mono text-brand-400 flex items-center gap-1">
+            <i class="fa-solid fa-arrows-rotate text-[10px]" id="radarSpinIcon"></i> Sync
+          </button>
+        </div>
+
+        <!-- Dynamic Radar Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5" id="marketRadarContainer">
+          <!-- Injected via JS -->
+        </div>
+
+        <!-- Log Community Price Input -->
+        <div class="mt-4 p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+          <span class="text-[11px] font-bold text-slate-200 block"><i class="fa-solid fa-plus-circle text-brand-400 mr-1"></i> Log Local Price (Crowdsource Engine)</span>
+          <div class="grid grid-cols-3 gap-2 text-xs">
+            <select id="crowdItem" class="clean-input px-2 py-1 rounded-lg text-[11px] bg-[#0b1322]">
+              <option value="Garri (Paint Bucket)">Garri (Paint)</option>
+              <option value="Cooking Gas (1kg)">Gas (1kg)</option>
+              <option value="Eggs (Crate of 30)">Eggs (Crate)</option>
+            </select>
+            <input type="number" id="crowdPrice" placeholder="₦ Price" class="clean-input px-2 py-1 rounded-lg text-[11px] font-mono">
+            <button onclick="submitCrowdPrice()" class="bg-brand-500 hover:bg-brand-600 text-white rounded-lg font-bold text-[11px] transition">
+              Log Rate
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Perfectly Centered Emergency S.O.S Modal -->
+  <div id="sosModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 hidden">
+    <div class="clean-glass w-[92%] sm:max-w-md p-5 sm:p-6 rounded-2xl border border-red-500/40 space-y-3 m-auto">
+      <div class="flex justify-between items-center">
+        <h3 class="text-sm sm:text-base font-bold text-red-400 font-mono flex items-center gap-1.5">
+          <i class="fa-solid fa-triangle-exclamation"></i> Emergency S.O.S Runway
+        </h3>
+        <button onclick="closeSosModal()" class="text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Polite message summarizing your financial position to copy or send directly via WhatsApp.
+      </p>
+
+      <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 font-mono text-[11px] text-slate-300 space-y-1" id="sosMessagePreview">
+        <!-- Injected -->
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="copySosMessage()" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1 border border-slate-700">
+          <i class="fa-solid fa-copy text-[11px]"></i> <span id="btnCopyText">Copy</span>
+        </button>
+        <button onclick="sendSosWhatsApp()" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1">
+          <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 bg-[#030712]/90 py-3 text-center text-[10px] text-slate-500 font-mono">
+    <p>SapaPulse AI &middot; Spatial Financial Intelligence for Nigerian Tertiary Students</p>
+  </footer>
+
+  <!-- ==================== SCRIPT ENGINE ==================== -->
+  <script>
+    // --- 1. LOCAL STORAGE & DATA STATE ---
+    const DB_BUDGET = 'sp_clean_budget';
+    const DB_LEDGER = 'sp_clean_ledger';
+    const DB_3D_SETTING = 'sp_clean_3d_state';
+    const DB_RADAR = 'sp_clean_radar_data';
+
+    let state = { budget: 0, days: 30, dues: 0 };
+    let ledger = [];
+    let is3DEnabled = true;
+
+    // Default market benchmark data
+    let marketData = [
+      { name: "Garri (Paint)", min: 2400, max: 2900, trend: "+14%", isUp: true, desc: "UNILAG, UNN & UI zones" },
+      { name: "Cooking Gas (1kg)", min: 1350, max: 1500, trend: "Stable", isUp: false, desc: "Campus perimeter refilling" },
+      { name: "Eggs (Crate)", min: 4300, max: 4900, trend: "+8%", isUp: true, desc: "High protein staple" }
+    ];
+
+    let scene, camera, renderer, particles;
+    let mouseX = 0, mouseY = 0;
+    let chartInstance = null;
+    let sharePayload = '';
+    let sosPayload = '';
+
+    // --- 2. INITIALIZATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      load3DPreference();
+      init3DBackground();
+      initCardTilt();
+      loadDatabase();
+      loadMarketRadar();
+      initChart();
+      renderAll();
+
+      setTimeout(() => {
+        const preloader = document.getElementById('preloader');
+        if (preloader) preloader.classList.add('loaded');
+      }, 450);
+    });
+
+    // --- 3. TAB CONTROLLER ---
+    function switchTab(tabId) {
+      playTone(440, 660);
+
+      ['tracker', 'advisor', 'simulator', 'splitter', 'market'].forEach(t => {
+        const view = document.getElementById(`view-${t}`);
+        const desktopBtn = document.getElementById(`tabBtn-${t}`);
+        const mobileBtn = document.getElementById(`mobBtn-${t}`);
+
+        if (view) {
+          if (t === tabId) {
+            view.classList.remove('tab-hidden');
+            view.classList.add('tab-active');
+          } else {
+            view.classList.add('tab-hidden');
+            view.classList.remove('tab-active');
+          }
+        }
+
+        if (desktopBtn) {
+          if (t === tabId) {
+            desktopBtn.classList.add('bg-brand-500', 'text-white');
+            desktopBtn.classList.remove('text-slate-400');
+          } else {
+            desktopBtn.classList.remove('bg-brand-500', 'text-white');
+            desktopBtn.classList.add('text-slate-400');
+          }
+        }
+
+        if (mobileBtn) {
+          if (t === tabId) {
+            mobileBtn.classList.add('text-brand-400');
+            mobileBtn.classList.remove('text-slate-400');
+          } else {
+            mobileBtn.classList.remove('text-brand-400');
+            mobileBtn.classList.add('text-slate-400');
+          }
+        }
+      });
+    }
+
+    // --- 4. 3D TOGGLE ENGINE ---
+    function load3DPreference() {
+      const saved = localStorage.getItem(DB_3D_SETTING);
+      is3DEnabled = saved !== null ? JSON.parse(saved) : true;
+      apply3DStateUI();
+    }
+
+    function toggle3DEffects() {
+      is3DEnabled = !is3DEnabled;
+      localStorage.setItem(DB_3D_SETTING, JSON.stringify(is3DEnabled));
+      apply3DStateUI();
+      playTone(550, 750);
+    }
+
+    function apply3DStateUI() {
+      const label = document.getElementById('label3DStatus');
+      const canvas = document.getElementById('webgl-canvas');
+      const light = document.getElementById('cursor-light');
+
+      if (label) {
+        label.innerText = is3DEnabled ? 'ON' : 'OFF';
+        label.className = is3DEnabled ? 'font-bold text-brand-400' : 'font-bold text-slate-500';
+      }
+
+      if (canvas) canvas.style.opacity = is3DEnabled ? '1' : '0';
+      if (light) light.style.opacity = is3DEnabled ? '1' : '0';
+
+      if (!is3DEnabled) {
+        document.querySelectorAll('[data-tilt]').forEach(card => card.style.transform = 'none');
+      }
+    }
+
+    // --- 5. THREE.JS CONSTELLATION ---
+    function init3DBackground() {
+      const canvas = document.getElementById('webgl-canvas');
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 30;
+
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+
+      const count = 200;
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+
+      for (let i = 0; i < count * 3; i += 3) {
+        positions[i] = (Math.random() - 0.5) * 70;
+        positions[i + 1] = (Math.random() - 0.5) * 70;
+        positions[i + 2] = (Math.random() - 0.5) * 70;
+
+        colors[i] = 0.2 + Math.random() * 0.2;
+        colors[i + 1] = 0.8 + Math.random() * 0.2;
+        colors[i + 2] = 0.6 + Math.random() * 0.4;
+      }
+
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const material = new THREE.PointsMaterial({
+        size: 0.7,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.45,
+        blending: THREE.AdditiveBlending
+      });
+
+      particles = new THREE.Points(geometry, material);
+      scene.add(particles);
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      document.addEventListener('mousemove', e => {
+        if (!is3DEnabled) return;
+        mouseX = (e.clientX - window.innerWidth / 2) * 0.01;
+        mouseY = (e.clientY - window.innerHeight / 2) * 0.01;
+
+        const spot = document.getElementById('cursor-light');
+        if (spot) {
+          spot.style.left = `${e.clientX}px`;
+          spot.style.top = `${e.clientY}px`;
+        }
+      });
+
+      function animate() {
+        requestAnimationFrame(animate);
+        if (particles && is3DEnabled) {
+          particles.rotation.y += 0.001;
+          particles.rotation.x += 0.0005;
+          particles.position.x += (mouseX - particles.position.x) * 0.05;
+          particles.position.y += (-mouseY - particles.position.y) * 0.05;
+        }
+        renderer.render(scene, camera);
+      }
+      animate();
+    }
+
+    // --- 6. CARD TILT INTERACTION ---
+    function initCardTilt() {
+      const cards = document.querySelectorAll('[data-tilt]');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', e => {
+          if (!is3DEnabled) return;
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const rotateX = ((y - (rect.height / 2)) / (rect.height / 2)) * -4;
+          const rotateY = ((x - (rect.width / 2)) / (rect.width / 2)) * 4;
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+          if (!is3DEnabled) return;
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        });
+      });
+    }
+
+    // --- 7. AUDIO FEEDBACK ---
+    function playTone(freq1 = 587.33, freq2 = 880) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq1, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq2, ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.04, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.12);
+      } catch (e) {}
+    }
+
+    // --- 8. DATABASE & LOGIC ---
+    function loadDatabase() {
+      const b = localStorage.getItem(DB_BUDGET);
+      const l = localStorage.getItem(DB_LEDGER);
+      if (b) {
+        state = JSON.parse(b);
+        document.getElementById('inTotalBudget').value = state.budget || '';
+        document.getElementById('inDays').value = state.days || '';
+        document.getElementById('inDues').value = state.dues || '';
+      }
+      if (l) ledger = JSON.parse(l);
+    }
+
+    function syncDB() {
+      localStorage.setItem(DB_BUDGET, JSON.stringify(state));
+      localStorage.setItem(DB_LEDGER, JSON.stringify(ledger));
+    }
+
+    function saveBudget(e) {
+      e.preventDefault();
+      state.budget = parseFloat(document.getElementById('inTotalBudget').value) || 0;
+      state.days = parseInt(document.getElementById('inDays').value) || 30;
+      state.dues = parseFloat(document.getElementById('inDues').value) || 0;
+      syncDB();
+      playTone(600, 900);
+      renderAll();
+    }
+
+    function addExpense(e) {
+      e.preventDefault();
+      const desc = document.getElementById('inExpDesc').value.trim();
+      const amount = parseFloat(document.getElementById('inExpAmount').value) || 0;
+      const category = document.getElementById('inExpCat').value;
+
+      if (!desc || amount <= 0) return;
+
+      ledger.unshift({
+        id: Date.now(),
+        desc,
+        amount,
+        category,
+        date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
+      });
+
+      syncDB();
+      playTone(700, 1050);
+      document.getElementById('inExpDesc').value = '';
+      document.getElementById('inExpAmount').value = '';
+      renderAll();
+    }
+
+    function deleteExpense(id) {
+      ledger = ledger.filter(item => item.id !== id);
+      syncDB();
+      renderAll();
+    }
+
+    function quickFillDemo() {
+      state = { budget: 60000, days: 30, dues: 6000 };
+      ledger = [
+        { id: 1, desc: 'Cooking Gas Refill (3kg)', amount: 4200, category: 'Gen Fuel / NEPA', date: 'Yesterday' },
+        { id: 2, desc: 'Buka Rice & Meat', amount: 1800, category: 'Mama Put / Food', date: 'Today' },
+        { id: 3, desc: 'CSC Handout Manual', amount: 2200, category: 'Academics & Prints', date: 'Today' },
+      ];
+      document.getElementById('inTotalBudget').value = state.budget;
+      document.getElementById('inDays').value = state.days;
+      document.getElementById('inDues').value = state.dues;
+      syncDB();
+      playTone(500, 850);
+      renderAll();
+    }
+
+    // Chart.js
+    function initChart() {
+      const ctx = document.getElementById('expensePieChart').getContext('2d');
+      chartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: [],
+          datasets: [{
+            data: [],
+            backgroundColor: ['#10b981', '#06b6d4', '#8b5cf6', '#f59e0b', '#f43f5e', '#64748b'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 9 } } }
+          },
+          cutout: '70%'
+        }
+      });
+    }
+
+    function updateChart(categories, totals) {
+      if (!chartInstance) return;
+      chartInstance.data.labels = categories;
+      chartInstance.data.datasets[0].data = totals;
+      chartInstance.update();
+    }
+
+    // Main Dashboard Render
+    function renderAll() {
+      const totalSpent = ledger.reduce((acc, x) => acc + x.amount, 0);
+      const safeBalance = Math.max(0, (state.budget - state.dues) - totalSpent);
+      const dailyAllowance = state.days > 0 ? (safeBalance / state.days) : 0;
+      const runway = Math.floor(safeBalance / 1000);
+
+      const fmt = n => '₦' + n.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      document.getElementById('kpiBalance').innerText = fmt(safeBalance);
+      document.getElementById('kpiInitial').innerText = fmt(state.budget);
+      document.getElementById('kpiDailyLimit').innerText = fmt(dailyAllowance);
+      document.getElementById('kpiDaysCount').innerText = `${state.days} Days Planned`;
+      document.getElementById('kpiRunway').innerText = `${runway} Days`;
+
+      const burnRate = state.budget > 0 ? ((totalSpent / (state.budget - state.dues)) * 100).toFixed(1) : 0;
+      document.getElementById('kpiBurn').innerText = `${burnRate}%`;
+      
+      const badge = document.getElementById('kpiStatusBadge');
+      if (burnRate > 75) {
+        badge.innerHTML = '<span class="text-red-400 font-bold font-mono">Critical</span>';
+      } else if (burnRate > 40) {
+        badge.innerHTML = '<span class="text-amber-400 font-medium font-mono">Moderate</span>';
+      } else {
+        badge.innerHTML = '<span class="text-brand-400 font-medium font-mono">Safe</span>';
+      }
+
+      document.getElementById('chartTotalBadge').innerText = `Total: ${fmt(totalSpent)}`;
+
+      const catMap = {};
+      ledger.forEach(i => catMap[i.category] = (catMap[i.category] || 0) + i.amount);
+      updateChart(Object.keys(catMap), Object.values(catMap));
+
+      renderLedger();
+      updateSosPreview(safeBalance, dailyAllowance);
+    }
+
+    function renderLedger() {
+      const q = (document.getElementById('tableFilter').value || '').toLowerCase();
+      const filtered = ledger.filter(i => i.desc.toLowerCase().includes(q) || i.category.toLowerCase().includes(q));
+      
+      const tbody = document.getElementById('ledgerBody');
+      const empty = document.getElementById('noDataState');
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        empty.classList.remove('hidden');
+      } else {
+        empty.classList.add('hidden');
+        tbody.innerHTML = filtered.map(i => `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="px-3 py-2 font-medium text-white">${escapeHTML(i.desc)}</td>
+            <td class="px-3 py-2 text-slate-400 text-[10px]">${i.category}</td>
+            <td class="px-3 py-2 font-mono text-brand-400 font-semibold">₦${i.amount.toLocaleString()}</td>
+            <td class="px-3 py-2 text-slate-500 font-mono text-[10px]">${i.date}</td>
+            <td class="px-3 py-2 text-right">
+              <button onclick="deleteExpense(${i.id})" class="text-slate-500 hover:text-red-400 transition" title="Delete">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // --- 9. MARKET RADAR ENGINE & CROWDSOURCING ---
+    function loadMarketRadar() {
+      const saved = localStorage.getItem(DB_RADAR);
+      if (saved) marketData = JSON.parse(saved);
+      renderMarketRadar();
+    }
+
+    function renderMarketRadar() {
+      const container = document.getElementById('marketRadarContainer');
+      container.innerHTML = marketData.map(item => `
+        <div class="p-3 rounded-xl bg-slate-900/70 border border-slate-800 space-y-1">
+          <div class="flex justify-between items-start">
+            <h4 class="text-xs font-bold text-white">${item.name}</h4>
+            <span class="text-[9px] px-1.5 py-0.5 rounded ${item.isUp ? 'bg-red-500/20 text-red-400' : 'bg-emerald-500/20 text-emerald-400'} font-mono">${item.trend}</span>
+          </div>
+          <div class="text-sm font-bold text-emerald-400 font-mono">₦${item.min.toLocaleString()} - ₦${item.max.toLocaleString()}</div>
+          <p class="text-[9px] text-slate-400">${item.desc}</p>
+        </div>
+      `).join('');
+    }
+
+    function syncMarketRadar() {
+      const icon = document.getElementById('radarSpinIcon');
+      icon.classList.add('animate-spin');
+      playTone(500, 800);
+
+      setTimeout(() => {
+        icon.classList.remove('animate-spin');
+        // Autonomous inflation adjustment simulation
+        marketData[0].min += 50;
+        marketData[0].max += 100;
+        localStorage.setItem(DB_RADAR, JSON.stringify(marketData));
+        renderMarketRadar();
+      }, 700);
+    }
+
+    function submitCrowdPrice() {
+      const itemKey = document.getElementById('crowdItem').value;
+      const price = parseFloat(document.getElementById('crowdPrice').value);
+      if (!price || price <= 0) return;
+
+      const target = marketData.find(m => itemKey.includes(m.name.split(' ')[0]));
+      if (target) {
+        target.min = Math.min(target.min, price);
+        target.max = Math.max(target.max, price);
+        localStorage.setItem(DB_RADAR, JSON.stringify(marketData));
+        renderMarketRadar();
+        document.getElementById('crowdPrice').value = '';
+        playTone(700, 1000);
+      }
+    }
+
+    // --- 10. AI ADVISOR ENGINE ---
+    function askAiPreset(type) {
+      playTone(500, 800);
+      const totalSpent = ledger.reduce((acc, x) => acc + x.amount, 0);
+      const safeBalance = Math.max(0, (state.budget - state.dues) - totalSpent);
+      const dailyAllowance = state.days > 0 ? (safeBalance / state.days) : 0;
+      const burnRate = state.budget > 0 ? ((totalSpent / (state.budget - state.dues)) * 100).toFixed(1) : 0;
+      const fmt = n => '₦' + n.toLocaleString('en-NG', { minimumFractionDigits: 2 });
+      const area = document.getElementById('aiResponseArea');
+
+      if (state.budget <= 0) {
+        area.innerHTML = `<span class="text-amber-400">⚠️ Please calibrate your allowance in the <strong>Budget Space</strong> tab first.</span>`;
+        return;
+      }
+
+      if (type === 'evaluate') {
+        if (burnRate > 70) {
+          area.innerHTML = `<strong>🚨 High Sapa Threat (${burnRate}% Burned):</strong> You have <strong>${fmt(safeBalance)}</strong> left for ${state.days} days. Daily cap is strictly <strong>${fmt(dailyAllowance)}</strong>. Suspend canteen meals and shuttle drops immediately.`;
+        } else if (burnRate > 35) {
+          area.innerHTML = `<strong>⚖️ Moderate Pace (${burnRate}% Burned):</strong> Remaining runway of <strong>${fmt(safeBalance)}</strong> is healthy. Safe daily limit is <strong>${fmt(dailyAllowance)}</strong>.`;
+        } else {
+          area.innerHTML = `<strong>✅ Optimal Health (${burnRate}% Burned):</strong> Good discipline! You have <strong>${fmt(safeBalance)}</strong> remaining.`;
+        }
+      } else if (type === 'food_strategy') {
+        area.innerHTML = `<strong>🍲 Strategy:</strong> Cooking bulk soups with roommates is <strong>~35% cheaper</strong> than daily canteen food. Purchase dry protein and garri in town wholesale markets.`;
+      } else if (type === 'cut_costs') {
+        area.innerHTML = `<strong>✂️ Cost Cuts:</strong><br>1. Night data bundles instead of daytime airtime.<br>2. Pool course manual printouts with study group.<br>3. Split gen fuel equally.`;
+      }
+    }
+
+    function handleCustomAiPrompt(e) {
+      e.preventDefault();
+      const input = document.getElementById('aiCustomPrompt');
+      const q = input.value.trim().toLowerCase();
+      if (!q) return;
+
+      playTone(550, 850);
+      const area = document.getElementById('aiResponseArea');
+
+      if (q.includes('save') || q.includes('cut') || q.includes('print')) {
+        area.innerHTML = `<strong>💡 Recommendation:</strong> For course handouts, pool PDF copies with course-mates and print in bulk at municipal centers rather than faculty cafes.`;
+      } else {
+        area.innerHTML = `<strong>🤖 SapaAI Insight:</strong> Cap daily spend below your limit of ₦${(state.budget / (state.days || 30)).toFixed(0)} and maintain an emergency staple reserve.`;
+      }
+
+      input.value = '';
+    }
+
+    // --- 11. SIMULATOR & SPLITTER ---
+    function runSimulation(e) {
+      e.preventDefault();
+      const mamaDaily = parseFloat(document.getElementById('simMamaDaily').value) || 0;
+      const forecastDays = parseInt(document.getElementById('simDays').value) || 1;
+      const soupCost = parseFloat(document.getElementById('simSoupCost').value) || 0;
+      const potDays = parseInt(document.getElementById('simPotDays').value) || 1;
+
+      const totalMama = mamaDaily * forecastDays;
+      const potsNeeded = Math.ceil(forecastDays / potDays);
+      const totalCook = potsNeeded * soupCost;
+      const savings = totalMama - totalCook;
+
+      const fmt = n => '₦' + n.toLocaleString('en-NG', { minimumFractionDigits: 2 });
+
+      document.getElementById('simResMamaTotal').innerText = fmt(totalMama);
+      document.getElementById('simResCookTotal').innerText = `${fmt(totalCook)} (${potsNeeded} pots)`;
+      
+      const badge = document.getElementById('simSavingsBadge');
+      const verdict = document.getElementById('simVerdictText');
+
+      if (savings > 0) {
+        badge.innerText = `Save ${fmt(savings)}`;
+        badge.className = 'text-[10px] px-2 py-0.5 rounded bg-brand-500/20 text-brand-400 font-bold font-mono';
+        verdict.innerHTML = `💡 Cooking saves you <strong>${fmt(savings)}</strong> over ${forecastDays} days (${potsNeeded} pots prepared).`;
+      } else {
+        badge.innerText = `Extra ${fmt(Math.abs(savings))}`;
+        badge.className = 'text-[10px] px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-bold font-mono';
+        verdict.innerHTML = `⚠️ Cooking short-term (${forecastDays} days) costs slightly more upfront than minimal canteen purchases.`;
+      }
+
+      document.getElementById('simResult').classList.remove('hidden');
+      playTone(600, 900);
+    }
+
+    function computePool(e) {
+      e.preventDefault();
+      const title = document.getElementById('poolTitle').value;
+      const total = parseFloat(document.getElementById('poolTotal').value);
+      const names = document.getElementById('poolNames').value.split(',').map(n => n.trim()).filter(n => n);
+      const acc = document.getElementById('poolAccount').value.trim();
+
+      if (names.length === 0 || total <= 0) return;
+
+      const perPerson = total / names.length;
+      const fmt = n => '₦' + n.toLocaleString('en-NG', { minimumFractionDigits: 2 });
+
+      document.getElementById('resPoolTitle').innerText = title;
+      document.getElementById('resPerPerson').innerText = `${fmt(perPerson)} / person`;
+      document.getElementById('resParticipantsList').innerText = `Participants (${names.length}): ${names.join(', ')}`;
+      document.getElementById('poolResult').classList.remove('hidden');
+
+      sharePayload = `*SapaPulse Hostel Contribution Split*\n` +
+        `📌 *Expense:* ${title}\n` +
+        `💰 *Total Bill:* ${fmt(total)}\n` +
+        `👥 *Members (${names.length}):* ${names.join(', ')}\n` +
+        `👉 *Amount per person:* ${fmt(perPerson)}\n` +
+        (acc ? `🏦 *Send to:* ${acc}\n` : '') +
+        `_Generated via SapaPulse AI_`;
+
+      playTone(600, 900);
+    }
+
+    function shareWhatsApp() {
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(sharePayload)}`;
+      window.open(url, '_blank');
+    }
+
+    // --- 12. SOS MODAL ---
+    function openSosModal() {
+      document.getElementById('sosModal').classList.remove('hidden');
+      playTone(400, 600);
+    }
+
+    function closeSosModal() {
+      document.getElementById('sosModal').classList.add('hidden');
+    }
+
+    function updateSosPreview(balance, daily) {
+      const fmt = n => '₦' + n.toLocaleString('en-NG', { minimumFractionDigits: 2 });
+      
+      sosPayload = `Good day! Here is my campus budget update:\n\n` +
+        `• Current Balance: ${fmt(balance)}\n` +
+        `• Days Remaining: ${state.days} Days\n` +
+        `• Safe Daily Limit: ${fmt(daily)}/day\n\n` +
+        `Any support for foodstuff and departmental dues would be appreciated!`;
+
+      const previewBox = document.getElementById('sosMessagePreview');
+      if (previewBox) {
+        previewBox.innerHTML = `
+          <p>• Remaining Balance: <span class="text-brand-400">${fmt(balance)}</span></p>
+          <p>• Days Left: <span class="text-white">${state.days} Days</span></p>
+          <p>• Daily Limit: <span class="text-accent-cyan">${fmt(daily)}</span></p>
+        `;
+      }
+    }
+
+    function copySosMessage() {
+      navigator.clipboard.writeText(sosPayload).then(() => {
+        const btnText = document.getElementById('btnCopyText');
+        btnText.innerText = 'Copied!';
+        setTimeout(() => btnText.innerText = 'Copy', 2000);
+      });
+    }
+
+    function sendSosWhatsApp() {
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(sosPayload)}`;
+      window.open(url, '_blank');
+    }
+
+    // --- 13. CSV EXPORT ---
+    function exportCSV() {
+      if (ledger.length === 0) {
+        alert('No records to export.');
+        return;
+      }
+      let csv = 'Description,Category,Amount(NGN),Date\n';
+      ledger.forEach(i => csv += `"${i.desc}","${i.category}",${i.amount},"${i.date}"\n`);
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `SapaPulse_Ledger_${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+    }
+
+    function escapeHTML(s) {
+      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>

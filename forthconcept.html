@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SapaPulse 5D | Smart Campus Financial OS & Survival Engine</title>
+
+  <!-- Typography: Space Grotesk & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Three.js for 3D Background Particles -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"Space Grotesk"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+            },
+            accent: {
+              cyan: '#06b6d4',
+              violet: '#a855f7',
+              amber: '#f59e0b',
+              crimson: '#f43f5e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      perspective: 1200px;
+      overflow-x: hidden;
+      background-color: #030712;
+    }
+
+    #webgl-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    /* Spatial Glassmorphism */
+    .spatial-card {
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out, border-color 0.3s ease, box-shadow 0.3s ease;
+      will-change: transform;
+    }
+
+    .spatial-card:hover {
+      border-color: rgba(52, 211, 153, 0.35);
+      box-shadow: 0 25px 50px -10px rgba(16, 185, 129, 0.2);
+    }
+
+    .spatial-input {
+      background: rgba(10, 15, 30, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #f8fafc;
+      transition: all 0.2s ease;
+    }
+    .spatial-input:focus {
+      outline: none;
+      border-color: #34d399;
+      background: rgba(10, 15, 30, 0.95);
+      box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
+    }
+
+    /* 3D Tab Views */
+    .tab-content {
+      transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-origin: center top;
+    }
+    .tab-hidden {
+      opacity: 0;
+      transform: scale(0.96) translateY(20px);
+      pointer-events: none;
+      position: absolute;
+      width: 100%;
+      top: 0;
+      visibility: hidden;
+    }
+    .tab-active {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      position: relative;
+      visibility: visible;
+    }
+
+    /* Mouse Glow */
+    #cursor-light {
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.03) 45%, transparent 70%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      transition: transform 0.08s ease-out, opacity 0.4s ease;
+    }
+
+    #preloader {
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #preloader.loaded {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* Mobile Drawer */
+    #mobileDrawer {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+
+<body class="text-slate-100 min-h-screen selection:bg-brand-500 selection:text-white flex flex-col justify-between">
+
+  <!-- Interactive ThreeJS Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+  <div id="cursor-light"></div>
+
+  <!-- Preloader Screen -->
+  <div id="preloader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#030712]">
+    <div class="relative flex items-center justify-center">
+      <div class="w-24 h-24 border-4 border-slate-800 border-t-brand-400 border-r-accent-cyan rounded-full animate-spin"></div>
+      <i class="fa-solid fa-bolt text-2xl text-brand-400 absolute animate-pulse"></i>
+    </div>
+    <div class="text-center mt-5">
+      <h3 class="text-base font-bold tracking-widest font-mono text-white">SAPAPULSE <span class="text-brand-400">5D OS</span></h3>
+      <p class="text-xs text-slate-400 mt-1 font-mono">Initializing Nigerian Campus Financial Matrix...</p>
+    </div>
+  </div>
+
+  <!-- Responsive Navigation Header -->
+  <header class="sticky top-0 z-40 border-b border-slate-800/80 bg-[#030712]/90 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 sm:h-20">
+        
+        <!-- Brand Logo -->
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-brand-600 via-accent-cyan to-accent-violet flex items-center justify-center shadow-lg shadow-brand-500/20 flex-shrink-0">
+            <i class="fa-solid fa-shapes text-white text-base"></i>
+          </div>
+          <div>
+            <h1 class="text-base sm:text-lg font-extrabold text-white tracking-tight font-mono flex items-center gap-1.5">
+              SAPAPULSE <span class="text-[10px] px-2 py-0.5 rounded bg-brand-500/20 text-brand-400 border border-brand-500/30">v5.0</span>
+            </h1>
+            <p class="text-[10px] sm:text-[11px] text-slate-400 -mt-0.5">Campus Survival & Allowance Intelligence</p>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation Tabs -->
+        <nav class="hidden md:flex items-center gap-1 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800">
+          <button onclick="switchTab('tracker')" id="tabBtn-tracker" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-brand-500 text-white shadow-lg transition flex items-center gap-1.5">
+            <i class="fa-solid fa-wallet"></i> <span>Budget Space</span>
+          </button>
+          <button onclick="switchTab('simulator')" id="tabBtn-simulator" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+            <i class="fa-solid fa-utensils"></i> <span>Cook vs Buy AI</span>
+          </button>
+          <button onclick="switchTab('splitter')" id="tabBtn-splitter" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+            <i class="fa-solid fa-people-group"></i> <span>Hostel Pool</span>
+          </button>
+          <button onclick="switchTab('market')" id="tabBtn-market" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+            <i class="fa-solid fa-store"></i> <span>Market Radar</span>
+          </button>
+        </nav>
+
+        <!-- Right Side Utility Controls (3D FX Toggle, SOS Button & Hamburger) -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          
+          <!-- Persistent 3D FX / Tilt Toggle Button -->
+          <button onclick="toggle3DEffects()" id="btnToggle3D" class="px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800/80 text-[11px] font-mono font-medium text-brand-400 flex items-center gap-1.5 hover:bg-slate-700 transition" title="Toggle 3D Tilt & Particles">
+            <i class="fa-solid fa-cube text-xs"></i>
+            <span class="hidden sm:inline">3D FX:</span>
+            <span id="label3DStatus" class="font-bold">ON</span>
+          </button>
+
+          <!-- Emergency SOS Modal Trigger -->
+          <button onclick="openSosModal()" class="px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 text-xs font-bold font-mono transition flex items-center gap-1.5">
+            <i class="fa-solid fa-triangle-exclamation animate-pulse"></i>
+            <span class="hidden sm:inline">S.O.S</span> Runway
+          </button>
+
+          <!-- Mobile Hamburger Toggle Button -->
+          <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-xl text-slate-400 hover:text-white border border-slate-800 bg-slate-900/80">
+            <i class="fa-solid fa-bars text-lg"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Drawer Dropdown -->
+    <div id="mobileDrawer" class="md:hidden hidden border-t border-slate-800/80 bg-[#070d1d] px-4 py-4 space-y-2">
+      <button onclick="switchTab('tracker'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-800 flex items-center gap-2">
+        <i class="fa-solid fa-wallet text-brand-400 w-5"></i> Budget Space
+      </button>
+      <button onclick="switchTab('simulator'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-800 flex items-center gap-2">
+        <i class="fa-solid fa-utensils text-accent-cyan w-5"></i> Cook vs Buy Simulator
+      </button>
+      <button onclick="switchTab('splitter'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-800 flex items-center gap-2">
+        <i class="fa-solid fa-people-group text-accent-violet w-5"></i> Hostel Pool Splitter
+      </button>
+      <button onclick="switchTab('market'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-800 flex items-center gap-2">
+        <i class="fa-solid fa-store text-accent-amber w-5"></i> Foodstuff Market Radar
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full relative">
+
+    <!-- ==================== TAB 1: BUDGET SPACE ==================== -->
+    <div id="view-tracker" class="tab-content tab-active space-y-6 sm:space-y-8">
+      
+      <!-- Spatial KPI Metrics Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+        
+        <div class="spatial-card p-4 sm:p-5 rounded-2xl border-l-4 border-l-brand-400" data-tilt>
+          <div class="flex justify-between items-center text-slate-400 text-[10px] sm:text-xs font-mono font-semibold uppercase">
+            <span>Net Safe Balance</span>
+            <i class="fa-solid fa-shield-halved text-brand-400 text-sm sm:text-base"></i>
+          </div>
+          <div class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-white mt-2 sm:mt-3 font-mono" id="kpiBalance">₦0.00</div>
+          <div class="text-[10px] sm:text-xs text-slate-400 mt-1 truncate">Initial: <span id="kpiInitial" class="text-slate-200">₦0.00</span></div>
+        </div>
+
+        <div class="spatial-card p-4 sm:p-5 rounded-2xl border-l-4 border-l-accent-cyan" data-tilt>
+          <div class="flex justify-between items-center text-slate-400 text-[10px] sm:text-xs font-mono font-semibold uppercase">
+            <span>Daily Spending Ceiling</span>
+            <i class="fa-solid fa-calculator text-accent-cyan text-sm sm:text-base"></i>
+          </div>
+          <div class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-accent-cyan mt-2 sm:mt-3 font-mono" id="kpiDailyLimit">₦0.00</div>
+          <div class="text-[10px] sm:text-xs text-slate-400 mt-1" id="kpiDaysCount">30 Days Planned</div>
+        </div>
+
+        <div class="spatial-card p-4 sm:p-5 rounded-2xl border-l-4 border-l-accent-amber" data-tilt>
+          <div class="flex justify-between items-center text-slate-400 text-[10px] sm:text-xs font-mono font-semibold uppercase">
+            <span>Garri Index Runway</span>
+            <i class="fa-solid fa-bowl-rice text-accent-amber text-sm sm:text-base"></i>
+          </div>
+          <div class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-accent-amber mt-2 sm:mt-3 font-mono" id="kpiRunway">0 Days</div>
+          <div class="text-[10px] sm:text-xs text-slate-400 mt-1">Staple buffer</div>
+        </div>
+
+        <div class="spatial-card p-4 sm:p-5 rounded-2xl border-l-4 border-l-accent-violet" data-tilt>
+          <div class="flex justify-between items-center text-slate-400 text-[10px] sm:text-xs font-mono font-semibold uppercase">
+            <span>Burn Velocity</span>
+            <i class="fa-solid fa-gauge-high text-accent-violet text-sm sm:text-base"></i>
+          </div>
+          <div class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-accent-violet mt-2 sm:mt-3 font-mono" id="kpiBurn">0.0%</div>
+          <div class="text-[10px] sm:text-xs text-slate-400 mt-1" id="kpiStatusBadge">Safe Zone</div>
+        </div>
+
+      </div>
+
+      <!-- Main Interaction Workspace -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+        
+        <!-- Controls (5 Cols) -->
+        <div class="lg:col-span-5 space-y-6">
+          
+          <!-- Configuration Card -->
+          <div class="spatial-card p-5 sm:p-6 rounded-3xl" data-tilt>
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-brand-400"></i> Setup Semester Budget
+              </h3>
+              <button onclick="quickFillDemo()" class="text-xs text-brand-400 hover:underline font-mono">Load Demo Data</button>
+            </div>
+
+            <form id="formBudget" onsubmit="saveBudget(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Total Pocket Money / Allowance (₦)</label>
+                <input type="number" id="inTotalBudget" required min="100" placeholder="e.g. 50000" class="w-full px-4 py-2.5 rounded-xl text-sm spatial-input font-mono">
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1.5">Days to Last</label>
+                  <input type="number" id="inDays" required min="1" max="180" placeholder="30" class="w-full px-4 py-2.5 rounded-xl text-sm spatial-input font-mono">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1.5">Hostel Dues Reserve (₦)</label>
+                  <input type="number" id="inDues" min="0" placeholder="e.g. 5000" class="w-full px-4 py-2.5 rounded-xl text-sm spatial-input font-mono">
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-brand-500/20">
+                Calibrate Financial Matrix
+              </button>
+            </form>
+          </div>
+
+          <!-- Expense Logger -->
+          <div class="spatial-card p-5 sm:p-6 rounded-3xl" data-tilt>
+            <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-receipt text-accent-cyan"></i> Instant Spend Deductor
+            </h3>
+
+            <form id="formExpense" onsubmit="addExpense(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Expense Description</label>
+                <input type="text" id="inExpDesc" required placeholder="e.g. 2 Plates Amala & Goat Meat" class="w-full px-4 py-2.5 rounded-xl text-sm spatial-input">
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1.5">Amount (₦)</label>
+                  <input type="number" id="inExpAmount" required min="1" placeholder="1800" class="w-full px-4 py-2.5 rounded-xl text-sm spatial-input font-mono">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1.5">Category</label>
+                  <select id="inExpCat" class="w-full px-4 py-2.5 rounded-xl text-sm spatial-input bg-[#0b1322]">
+                    <option value="Mama Put / Food">Food / Mama Put</option>
+                    <option value="Cooking Groceries">Cooking Foodstuff</option>
+                    <option value="Campus Shuttles">Campus Shuttles</option>
+                    <option value="Academics & Prints">Handouts & Dept Dues</option>
+                    <option value="Data Subscriptions">Data / Airtime</option>
+                    <option value="Gen Fuel / NEPA">Hostel Gen Fuel / NEPA</option>
+                    <option value="Emergency Misc">Other Miscellaneous</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold border border-slate-700 transition">
+                Deduct & Sync Ledger
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+        <!-- Visualizer & Ledger (7 Cols) -->
+        <div class="lg:col-span-7 space-y-6">
+          
+          <!-- Spend Breakdown Chart -->
+          <div class="spatial-card p-5 sm:p-6 rounded-3xl" data-tilt>
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie text-accent-violet"></i> Spending Breakdown
+              </h3>
+              <span id="chartTotalBadge" class="text-xs font-mono text-slate-400">Total: ₦0.00</span>
+            </div>
+            <div class="h-44 w-full flex items-center justify-center">
+              <canvas id="expensePieChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Transaction Ledger with Search and CSV Export -->
+          <div class="spatial-card rounded-3xl overflow-hidden" data-tilt>
+            <div class="p-4 sm:p-5 border-b border-slate-800 flex flex-wrap gap-2 justify-between items-center">
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-list-check text-brand-400"></i> Transaction Records
+              </h3>
+              <div class="flex items-center gap-2">
+                <input type="text" id="tableFilter" oninput="renderLedger()" placeholder="Filter..." class="text-xs px-3 py-1.5 rounded-xl spatial-input w-28 sm:w-36 font-sans">
+                <button onclick="exportCSV()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700" title="Download CSV">
+                  <i class="fa-solid fa-download"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto max-h-56 overflow-y-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-900/90 text-slate-400 uppercase font-mono tracking-wider sticky top-0">
+                  <tr>
+                    <th class="px-4 sm:px-5 py-3">Item</th>
+                    <th class="px-4 sm:px-5 py-3">Category</th>
+                    <th class="px-4 sm:px-5 py-3">Cost</th>
+                    <th class="px-4 sm:px-5 py-3">Date</th>
+                    <th class="px-4 sm:px-5 py-3 text-right">Delete</th>
+                  </tr>
+                </thead>
+                <tbody id="ledgerBody" class="divide-y divide-slate-800/60 text-slate-300">
+                  <!-- Dynamic JS rows -->
+                </tbody>
+              </table>
+              <div id="noDataState" class="py-10 text-center text-slate-500 text-xs font-mono">
+                No ledger transactions logged yet.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== TAB 2: COOK VS MAMA-PUT AI SIMULATOR ==================== -->
+    <div id="view-simulator" class="tab-content tab-hidden space-y-6">
+      <div class="spatial-card p-6 sm:p-8 rounded-3xl max-w-3xl mx-auto" data-tilt>
+        <div class="text-center space-y-2 max-w-lg mx-auto">
+          <div class="h-12 w-12 rounded-2xl bg-gradient-to-tr from-accent-cyan to-brand-500 flex items-center justify-center mx-auto text-white shadow-lg shadow-cyan-500/20">
+            <i class="fa-solid fa-kitchen-set text-lg"></i>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white font-mono">Cook vs. Mama-Put Economic Simulator</h2>
+          <p class="text-xs text-slate-400">Discover how much money you can save by cooking a pot of soup vs. eating daily canteen food.</p>
+        </div>
+
+        <form id="simForm" onsubmit="runSimulation(event)" class="mt-8 space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Average Daily Mama-Put Spend (₦)</label>
+              <input type="number" id="simMamaDaily" required min="500" placeholder="e.g. 2500" class="w-full px-4 py-2.5 rounded-xl text-sm spatial-input font-mono">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Days to Forecast</label>
+              <input type="number" id="simDays" required min="1" max="60" placeholder="e.g. 14" class="w-full px-4 py-2.5 rounded-xl text-sm spatial-input font-mono">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Estimated Cost to Cook 1 Big Soup Pot (₦)</label>
+              <input type="number" id="simSoupCost" required min="1000" placeholder="e.g. 7000 (Egusi + Fish + Meat)" class="w-full px-4 py-2.5 rounded-xl text-sm spatial-input font-mono">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Days One Soup Pot Lasts</label>
+              <input type="number" id="simPotDays" required min="1" max="14" placeholder="e.g. 5" class="w-full px-4 py-2.5 rounded-xl text-sm spatial-input font-mono">
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-accent-cyan to-brand-500 hover:brightness-110 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-cyan-500/20">
+            Run AI Comparative Forecast
+          </button>
+        </form>
+
+        <div id="simResult" class="hidden mt-6 p-6 rounded-2xl bg-slate-900/90 border border-accent-cyan/30 space-y-4">
+          <h4 class="text-sm font-bold text-accent-cyan font-mono flex items-center justify-between">
+            <span>Forecast Results</span>
+            <span id="simSavingsBadge" class="text-xs px-2.5 py-1 rounded bg-brand-500/20 text-brand-400">Save ₦0.00</span>
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
+            <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700">
+              <span class="text-slate-400 block mb-1">Total Mama-Put Cost:</span>
+              <span class="text-base font-bold text-red-400" id="simResMamaTotal">₦0.00</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700">
+              <span class="text-slate-400 block mb-1">Total Home Cooking Cost:</span>
+              <span class="text-base font-bold text-brand-400" id="simResCookTotal">₦0.00</span>
+            </div>
+          </div>
+          <p id="simVerdictText" class="text-xs text-slate-300 leading-relaxed"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 3: HOSTEL POOL SPLITTER ==================== -->
+    <div id="view-splitter" class="tab-content tab-hidden space-y-6">
+      <div class="spatial-card p-6 sm:p-8 rounded-3xl max-w-3xl mx-auto" data-tilt>
+        <div class="text-center space-y-2 max-w-lg mx-auto">
+          <div class="h-12 w-12 rounded-2xl bg-gradient-to-tr from-accent-violet to-brand-500 flex items-center justify-center mx-auto text-white shadow-lg shadow-violet-500/20">
+            <i class="fa-solid fa-people-group text-lg"></i>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white font-mono">Hostel Fuel & Bill Splitter</h2>
+          <p class="text-xs text-slate-400">Avoid roommate disputes. Compute exact shares for generator fuel, NEPA units, and food pots, then share directly to WhatsApp.</p>
+        </div>
+
+        <form id="poolForm" onsubmit="computePool(event)" class="mt-8 space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Contribution Title</label>
+              <input type="text" id="poolTitle" required placeholder="e.g. 20L Generator Fuel + NEPA Bill" class="w-full px-4 py-2.5 rounded-xl text-sm spatial-input">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Total Amount (₦)</label>
+              <input type="number" id="poolTotal" required min="1" placeholder="e.g. 22000" class="w-full px-4 py-2.5 rounded-xl text-sm spatial-input font-mono">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Roommate Names (Comma Separated)</label>
+            <input type="text" id="poolNames" required placeholder="e.g. Tunde, Chinedu, Amina, Ibrahim" class="w-full px-4 py-2.5 rounded-xl text-sm spatial-input">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Receiving Account (Optional)</label>
+            <input type="text" id="poolAccount" placeholder="e.g. Opay: 8012345678 (Tunde)" class="w-full px-4 py-2.5 rounded-xl text-sm spatial-input font-mono">
+          </div>
+
+          <button type="submit" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-brand-500/25">
+            Calculate Shares
+          </button>
+        </form>
+
+        <div id="poolResult" class="hidden mt-6 p-6 rounded-2xl bg-slate-900/90 border border-brand-500/30 space-y-4">
+          <div class="flex justify-between items-center">
+            <h4 class="text-sm font-bold text-brand-400 font-mono" id="resPoolTitle">Split Summary</h4>
+            <span class="text-xs px-3 py-1 rounded-lg bg-brand-500/20 text-brand-300 font-mono font-bold" id="resPerPerson">₦0 / person</span>
+          </div>
+          <p class="text-xs text-slate-300 font-mono leading-relaxed" id="resParticipantsList"></p>
+          <button onclick="shareWhatsApp()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition">
+            <i class="fa-brands fa-whatsapp text-base"></i> Share Receipt to WhatsApp Group
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 4: MARKET RADAR ==================== -->
+    <div id="view-market" class="tab-content tab-hidden space-y-6">
+      <div class="spatial-card p-6 sm:p-8 rounded-3xl" data-tilt>
+        <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-bold text-white font-mono">Campus Foodstuff Inflation Radar</h2>
+            <p class="text-xs text-slate-400">Live staple price benchmarks across Nigerian university zones.</p>
+          </div>
+          <span class="text-xs font-mono bg-slate-800 text-brand-400 px-3 py-1.5 rounded-xl border border-slate-700">Live Campus Averages</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-2">
+            <div class="flex justify-between items-start">
+              <h4 class="text-sm font-bold text-white">Garri (Paint Bucket)</h4>
+              <span class="text-xs px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-mono">+14%</span>
+            </div>
+            <div class="text-xl font-bold text-emerald-400 font-mono">₦2,400 - ₦2,900</div>
+            <p class="text-[11px] text-slate-400">UNILAG, UNN, UI, & OAU environs</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-2">
+            <div class="flex justify-between items-start">
+              <h4 class="text-sm font-bold text-white">Cooking Gas (1kg)</h4>
+              <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono">Stable</span>
+            </div>
+            <div class="text-xl font-bold text-emerald-400 font-mono">₦1,350 - ₦1,500</div>
+            <p class="text-[11px] text-slate-400">Campus perimeter vendor rate</p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-2">
+            <div class="flex justify-between items-start">
+              <h4 class="text-sm font-bold text-white">Eggs (Crate of 30)</h4>
+              <span class="text-xs px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-mono">+8%</span>
+            </div>
+            <div class="text-xl font-bold text-emerald-400 font-mono">₦4,300 - ₦4,900</div>
+            <p class="text-[11px] text-slate-400">Essential high-protein staple index</p>
+          </div>
+        </div>
+
+        <div class="mt-6 p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex gap-4 items-start">
+          <i class="fa-solid fa-lightbulb text-amber-400 text-lg mt-0.5"></i>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            <strong class="text-amber-400">Smart Survival Tip:</strong> Buying dry foodstuffs directly inside hostel mini-marts carries an average 30% markup. Partner with roommates on Saturdays to take public transit to main wholesale markets.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Emergency S.O.S Modal -->
+  <div id="sosModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 hidden">
+    <div class="spatial-card max-w-lg w-full p-6 sm:p-8 rounded-3xl border border-red-500/40 space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="text-base sm:text-lg font-bold text-red-400 font-mono flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation"></i> Emergency Allowance S.O.S
+        </h3>
+        <button onclick="closeSosModal()" class="text-slate-400 hover:text-white text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Generate a polite, transparent financial assistance request message summarizing your exact deficit to send to parents or sponsors on WhatsApp.
+      </p>
+
+      <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 font-mono text-xs text-slate-300 space-y-1.5" id="sosMessagePreview">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <div class="flex gap-3">
+        <button onclick="copySosMessage()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1.5 border border-slate-700">
+          <i class="fa-solid fa-copy"></i> <span id="btnCopyText">Copy Text</span>
+        </button>
+        <button onclick="sendSosWhatsApp()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1.5">
+          <i class="fa-brands fa-whatsapp text-base"></i> Send on WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 bg-[#030712]/90 py-5 text-center text-xs text-slate-500 font-mono">
+    <p>SapaPulse 5D &middot; Engineered with Semantic HTML5, Tailwind CSS, Three.js & localStorage CRUD</p>
+  </footer>
+
+  <!-- ==================== SCRIPT ENGINE ==================== -->
+  <script>
+    // --- 1. LOCALSTORAGE KEYS & CONFIG ---
+    const DB_BUDGET = 'sp_v5_budget';
+    const DB_LEDGER = 'sp_v5_ledger';
+    const DB_3D_SETTING = 'sp_v5_3d_state';
+
+    let state = { budget: 0, days: 30, dues: 0 };
+    let ledger = [];
+    let is3DEnabled = true;
+
+    let scene, camera, renderer, particles;
+    let mouseX = 0, mouseY = 0;
+    let chartInstance = null;
+    let sharePayload = '';
+    let sosPayload = '';
+
+    // --- 2. INITIALIZATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      load3DPreference();
+      init3DBackground();
+      initCardTilt();
+      loadDatabase();
+      initChart();
+      renderAll();
+
+      setTimeout(() => {
+        const preloader = document.getElementById('preloader');
+        if (preloader) preloader.classList.add('loaded');
+      }, 600);
+    });
+
+    // --- 3. RESPONSIVE NAVIGATION & TABS ---
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobileDrawer');
+      drawer.classList.toggle('hidden');
+    }
+
+    function switchTab(tabId) {
+      playTone(440, 660);
+
+      ['tracker', 'simulator', 'splitter', 'market'].forEach(t => {
+        const view = document.getElementById(`view-${t}`);
+        const btn = document.getElementById(`tabBtn-${t}`);
+
+        if (view) {
+          if (t === tabId) {
+            view.classList.remove('tab-hidden');
+            view.classList.add('tab-active');
+          } else {
+            view.classList.add('tab-hidden');
+            view.classList.remove('tab-active');
+          }
+        }
+
+        if (btn) {
+          if (t === tabId) {
+            btn.classList.add('bg-brand-500', 'text-white', 'shadow-lg');
+            btn.classList.remove('text-slate-400');
+          } else {
+            btn.classList.remove('bg-brand-500', 'text-white', 'shadow-lg');
+            btn.classList.add('text-slate-400');
+          }
+        }
+      });
+    }
+
+    // --- 4. PERSISTENT 3D FX / TILT TOGGLE ENGINE ---
+    function load3DPreference() {
+      const saved = localStorage.getItem(DB_3D_SETTING);
+      is3DEnabled = saved !== null ? JSON.parse(saved) : true;
+      apply3DStateUI();
+    }
+
+    function toggle3DEffects() {
+      is3DEnabled = !is3DEnabled;
+      localStorage.setItem(DB_3D_SETTING, JSON.stringify(is3DEnabled));
+      apply3DStateUI();
+      playTone(550, 750);
+    }
+
+    function apply3DStateUI() {
+      const label = document.getElementById('label3DStatus');
+      const canvas = document.getElementById('webgl-canvas');
+      const light = document.getElementById('cursor-light');
+
+      if (label) {
+        label.innerText = is3DEnabled ? 'ON' : 'OFF';
+        label.className = is3DEnabled ? 'font-bold text-brand-400' : 'font-bold text-slate-500';
+      }
+
+      if (canvas) canvas.style.opacity = is3DEnabled ? '1' : '0';
+      if (light) light.style.opacity = is3DEnabled ? '1' : '0';
+
+      // Reset card tilts when disabled
+      if (!is3DEnabled) {
+        document.querySelectorAll('[data-tilt]').forEach(card => {
+          card.style.transform = 'none';
+        });
+      }
+    }
+
+    // --- 5. THREE.JS 3D BACKGROUND ---
+    function init3DBackground() {
+      const canvas = document.getElementById('webgl-canvas');
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 30;
+
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      const count = 300;
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+
+      for (let i = 0; i < count * 3; i += 3) {
+        positions[i] = (Math.random() - 0.5) * 80;
+        positions[i + 1] = (Math.random() - 0.5) * 80;
+        positions[i + 2] = (Math.random() - 0.5) * 80;
+
+        colors[i] = 0.2 + Math.random() * 0.2;
+        colors[i + 1] = 0.8 + Math.random() * 0.2;
+        colors[i + 2] = 0.6 + Math.random() * 0.4;
+      }
+
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const material = new THREE.PointsMaterial({
+        size: 0.8,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.5,
+        blending: THREE.AdditiveBlending
+      });
+
+      particles = new THREE.Points(geometry, material);
+      scene.add(particles);
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      document.addEventListener('mousemove', e => {
+        if (!is3DEnabled) return;
+        mouseX = (e.clientX - window.innerWidth / 2) * 0.015;
+        mouseY = (e.clientY - window.innerHeight / 2) * 0.015;
+
+        const spot = document.getElementById('cursor-light');
+        if (spot) {
+          spot.style.left = `${e.clientX}px`;
+          spot.style.top = `${e.clientY}px`;
+        }
+      });
+
+      function animate() {
+        requestAnimationFrame(animate);
+        if (particles && is3DEnabled) {
+          particles.rotation.y += 0.0012;
+          particles.rotation.x += 0.0006;
+          particles.position.x += (mouseX - particles.position.x) * 0.05;
+          particles.position.y += (-mouseY - particles.position.y) * 0.05;
+        }
+        renderer.render(scene, camera);
+      }
+      animate();
+    }
+
+    // --- 6. CARD TILT INTERACTION ---
+    function initCardTilt() {
+      const cards = document.querySelectorAll('[data-tilt]');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', e => {
+          if (!is3DEnabled) return;
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const rotateX = ((y - (rect.height / 2)) / (rect.height / 2)) * -6;
+          const rotateY = ((x - (rect.width / 2)) / (rect.width / 2)) * 6;
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.015, 1.015, 1.015)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+          if (!is3DEnabled) return;
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        });
+      });
+    }
+
+    // --- 7. AUDIO FEEDBACK ---
+    function playTone(freq1 = 587.33, freq2 = 880) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq1, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq2, ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.15);
+      } catch (e) {}
+    }
+
+    // --- 8. DATABASE (localStorage) & CALCULATIONS ---
+    function loadDatabase() {
+      const b = localStorage.getItem(DB_BUDGET);
+      const l = localStorage.getItem(DB_LEDGER);
+      if (b) {
+        state = JSON.parse(b);
+        document.getElementById('inTotalBudget').value = state.budget || '';
+        document.getElementById('inDays').value = state.days || '';
+        document.getElementById('inDues').value = state.dues || '';
+      }
+      if (l) ledger = JSON.parse(l);
+    }
+
+    function syncDB() {
+      localStorage.setItem(DB_BUDGET, JSON.stringify(state));
+      localStorage.setItem(DB_LEDGER, JSON.stringify(ledger));
+    }
+
+    function saveBudget(e) {
+      e.preventDefault();
+      state.budget = parseFloat(document.getElementById('inTotalBudget').value) || 0;
+      state.days = parseInt(document.getElementById('inDays').value) || 30;
+      state.dues = parseFloat(document.getElementById('inDues').value) || 0;
+      syncDB();
+      playTone(600, 900);
+      renderAll();
+    }
+
+    function addExpense(e) {
+      e.preventDefault();
+      const desc = document.getElementById('inExpDesc').value.trim();
+      const amount = parseFloat(document.getElementById('inExpAmount').value) || 0;
+      const category = document.getElementById('inExpCat').value;
+
+      if (!desc || amount <= 0) return;
+
+      ledger.unshift({
+        id: Date.now(),
+        desc,
+        amount,
+        category,
+        date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
+      });
+
+      syncDB();
+      playTone(700, 1050);
+      document.getElementById('inExpDesc').value = '';
+      document.getElementById('inExpAmount').value = '';
+      renderAll();
+    }
+
+    function deleteExpense(id) {
+      ledger = ledger.filter(item => item.id !== id);
+      syncDB();
+      renderAll();
+    }
+
+    function quickFillDemo() {
+      state = { budget: 60000, days: 30, dues: 6000 };
+      ledger = [
+        { id: 1, desc: '3kg Cooking Gas Refill', amount: 4200, category: 'Gen Fuel / NEPA', date: 'Yesterday' },
+        { id: 2, desc: 'Buka Rice + Fried Fish', amount: 1800, category: 'Mama Put / Food', date: 'Today' },
+        { id: 3, desc: 'CSC 302 Lab Manual Printout', amount: 2200, category: 'Academics & Prints', date: 'Today' },
+      ];
+      document.getElementById('inTotalBudget').value = state.budget;
+      document.getElementById('inDays').value = state.days;
+      document.getElementById('inDues').value = state.dues;
+      syncDB();
+      playTone(500, 850);
+      renderAll();
+    }
+
+    // Chart.js
+    function initChart() {
+      const ctx = document.getElementById('expensePieChart').getContext('2d');
+      chartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: [],
+          datasets: [{
+            data: [],
+            backgroundColor: ['#10b981', '#06b6d4', '#8b5cf6', '#f59e0b', '#f43f5e', '#64748b', '#ec4899'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 10 } } }
+          },
+          cutout: '72%'
+        }
+      });
+    }
+
+    function updateChart(categories, totals) {
+      if (!chartInstance) return;
+      chartInstance.data.labels = categories;
+      chartInstance.data.datasets[0].data = totals;
+      chartInstance.update();
+    }
+
+    // Render Dashboard Elements
+    function renderAll() {
+      const totalSpent = ledger.reduce((acc, x) => acc + x.amount, 0);
+      const safeBalance = Math.max(0, (state.budget - state.dues) - totalSpent);
+      const dailyAllowance = state.days > 0 ? (safeBalance / state.days) : 0;
+      const runway = Math.floor(safeBalance / 1000);
+
+      const fmt = n => '₦' + n.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      document.getElementById('kpiBalance').innerText = fmt(safeBalance);
+      document.getElementById('kpiInitial').innerText = fmt(state.budget);
+      document.getElementById('kpiDailyLimit').innerText = fmt(dailyAllowance);
+      document.getElementById('kpiDaysCount').innerText = `${state.days} Days Planned`;
+      document.getElementById('kpiRunway').innerText = `${runway} Days`;
+
+      const burnRate = state.budget > 0 ? ((totalSpent / (state.budget - state.dues)) * 100).toFixed(1) : 0;
+      document.getElementById('kpiBurn').innerText = `${burnRate}%`;
+      
+      const badge = document.getElementById('kpiStatusBadge');
+      if (burnRate > 75) {
+        badge.innerHTML = '<span class="text-red-400 font-bold font-mono">Critical Danger</span>';
+      } else if (burnRate > 40) {
+        badge.innerHTML = '<span class="text-amber-400 font-medium font-mono">Moderate Spend</span>';
+      } else {
+        badge.innerHTML = '<span class="text-brand-400 font-medium font-mono">Safe Trajectory</span>';
+      }
+
+      document.getElementById('chartTotalBadge').innerText = `Total: ${fmt(totalSpent)}`;
+
+      const catMap = {};
+      ledger.forEach(i => catMap[i.category] = (catMap[i.category] || 0) + i.amount);
+      updateChart(Object.keys(catMap), Object.values(catMap));
+
+      renderLedger();
+      updateSosPreview(safeBalance, dailyAllowance);
+    }
+
+    function renderLedger() {
+      const q = (document.getElementById('tableFilter').value || '').toLowerCase();
+      const filtered = ledger.filter(i => i.desc.toLowerCase().includes(q) || i.category.toLowerCase().includes(q));
+      
+      const tbody = document.getElementById('ledgerBody');
+      const empty = document.getElementById('noDataState');
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        empty.classList.remove('hidden');
+      } else {
+        empty.classList.add('hidden');
+        tbody.innerHTML = filtered.map(i => `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="px-4 sm:px-5 py-3 font-medium text-white">${escapeHTML(i.desc)}</td>
+            <td class="px-4 sm:px-5 py-3 text-slate-400 text-xs">${i.category}</td>
+            <td class="px-4 sm:px-5 py-3 font-mono text-brand-400 font-semibold">₦${i.amount.toLocaleString()}</td>
+            <td class="px-4 sm:px-5 py-3 text-slate-500 font-mono text-xs">${i.date}</td>
+            <td class="px-4 sm:px-5 py-3 text-right">
+              <button onclick="deleteExpense(${i.id})" class="text-slate-500 hover:text-red-400 transition" title="Delete record">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // --- 9. COOK VS MAMA-PUT AI SIMULATOR ENGINE ---
+    function runSimulation(e) {
+      e.preventDefault();
+      const mamaDaily = parseFloat(document.getElementById('simMamaDaily').value) || 0;
+      const forecastDays = parseInt(document.getElementById('simDays').value) || 1;
+      const soupCost = parseFloat(document.getElementById('simSoupCost').value) || 0;
+      const potDays = parseInt(document.getElementById('simPotDays').value) || 1;
+
+      const totalMama = mamaDaily * forecastDays;
+      const potsNeeded = Math.ceil(forecastDays / potDays);
+      const totalCook = potsNeeded * soupCost;
+      const savings = totalMama - totalCook;
+
+      const fmt = n => '₦' + n.toLocaleString('en-NG', { minimumFractionDigits: 2 });
+
+      document.getElementById('simResMamaTotal').innerText = fmt(totalMama);
+      document.getElementById('simResCookTotal').innerText = `${fmt(totalCook)} (${potsNeeded} pots)`;
+      
+      const badge = document.getElementById('simSavingsBadge');
+      const verdict = document.getElementById('simVerdictText');
+
+      if (savings > 0) {
+        badge.innerText = `Save ${fmt(savings)}`;
+        badge.className = 'text-xs px-2.5 py-1 rounded bg-brand-500/20 text-brand-400 font-bold font-mono';
+        verdict.innerHTML = `💡 <strong class="text-brand-400">Recommendation:</strong> Cooking at the hostel saves you <strong>${fmt(savings)}</strong> over ${forecastDays} days. You will prepare <strong>${potsNeeded} pots</strong> of soup, cutting your food spend by <strong>${((savings / totalMama) * 100).toFixed(0)}%</strong>.`;
+      } else {
+        badge.innerText = `Extra ${fmt(Math.abs(savings))}`;
+        badge.className = 'text-xs px-2.5 py-1 rounded bg-red-500/20 text-red-400 font-bold font-mono';
+        verdict.innerHTML = `⚠️ <strong class="text-amber-400">Recommendation:</strong> Cooking for short periods (${forecastDays} days) with expensive ingredients costs slightly more upfront than buying small Mama-Put portions.`;
+      }
+
+      document.getElementById('simResult').classList.remove('hidden');
+      playTone(600, 900);
+    }
+
+    // --- 10. HOSTEL POOL SPLITTER ---
+    function computePool(e) {
+      e.preventDefault();
+      const title = document.getElementById('poolTitle').value;
+      const total = parseFloat(document.getElementById('poolTotal').value);
+      const names = document.getElementById('poolNames').value.split(',').map(n => n.trim()).filter(n => n);
+      const acc = document.getElementById('poolAccount').value.trim();
+
+      if (names.length === 0 || total <= 0) return;
+
+      const perPerson = total / names.length;
+      const fmt = n => '₦' + n.toLocaleString('en-NG', { minimumFractionDigits: 2 });
+
+      document.getElementById('resPoolTitle').innerText = title;
+      document.getElementById('resPerPerson').innerText = `${fmt(perPerson)} / person`;
+      document.getElementById('resParticipantsList').innerText = `Participants (${names.length}): ${names.join(', ')}`;
+      document.getElementById('poolResult').classList.remove('hidden');
+
+      sharePayload = `*SapaPulse Hostel Contribution Split*\n` +
+        `📌 *Expense:* ${title}\n` +
+        `💰 *Total Bill:* ${fmt(total)}\n` +
+        `👥 *Members (${names.length}):* ${names.join(', ')}\n` +
+        `👉 *Amount per person:* ${fmt(perPerson)}\n` +
+        (acc ? `🏦 *Send to:* ${acc}\n` : '') +
+        `_Generated via SapaPulse 5D_`;
+
+      playTone(600, 900);
+    }
+
+    function shareWhatsApp() {
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(sharePayload)}`;
+      window.open(url, '_blank');
+    }
+
+    // --- 11. EMERGENCY S.O.S RUNWAY MODAL ---
+    function openSosModal() {
+      document.getElementById('sosModal').classList.remove('hidden');
+      playTone(400, 600);
+    }
+
+    function closeSosModal() {
+      document.getElementById('sosModal').classList.add('hidden');
+    }
+
+    function updateSosPreview(balance, daily) {
+      const fmt = n => '₦' + n.toLocaleString('en-NG', { minimumFractionDigits: 2 });
+      
+      sosPayload = `Good day! Hope you're doing well. Here is a brief update on my campus semester budget breakdown:\n\n` +
+        `• *Current Safe Balance:* ${fmt(balance)}\n` +
+        `• *Days Remaining:* ${state.days} Days\n` +
+        `• *Calculated Safe Daily Limit:* ${fmt(daily)}/day\n\n` +
+        `With campus food prices and utilities, any support to cushion my staple food & departmental dues would go a long way. Thank you!`;
+
+      const previewBox = document.getElementById('sosMessagePreview');
+      if (previewBox) {
+        previewBox.innerHTML = `
+          <p><strong>[WhatsApp Message Draft]</strong></p>
+          <p class="mt-1">"Good day! Here is my campus budget update:</p>
+          <p>• Remaining Balance: <span class="text-brand-400">${fmt(balance)}</span></p>
+          <p>• Days to Go: <span class="text-white">${state.days} Days</span></p>
+          <p>• Safe Daily Spend: <span class="text-accent-cyan">${fmt(daily)}</span></p>
+          <p class="mt-1">Any support to cushion foodstuff and handout expenses would be appreciated!"</p>
+        `;
+      }
+    }
+
+    function copySosMessage() {
+      navigator.clipboard.writeText(sosPayload).then(() => {
+        const btnText = document.getElementById('btnCopyText');
+        btnText.innerText = 'Copied!';
+        setTimeout(() => btnText.innerText = 'Copy Text', 2000);
+      });
+    }
+
+    function sendSosWhatsApp() {
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(sosPayload)}`;
+      window.open(url, '_blank');
+    }
+
+    // --- 12. CSV EXPORT & UTILS ---
+    function exportCSV() {
+      if (ledger.length === 0) {
+        alert('No ledger records available to export.');
+        return;
+      }
+      let csv = 'Description,Category,Amount(NGN),Date\n';
+      ledger.forEach(i => {
+        csv += `"${i.desc}","${i.category}",${i.amount},"${i.date}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `SapaPulse_Ledger_${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+    }
+
+    function escapeHTML(s) {
+      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>
