@@ -148,24 +148,15 @@
         <div class="h-10 w-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-accent-cyan flex items-center justify-center shadow-lg shadow-brand-500/20 flex-shrink-0">
           <i class="fa-solid fa-shield-halved text-white text-base"></i>
         </div>
-        <a href="/">
-          <span class="text-lg font-bold font-mono tracking-tight text-white">
-            Sapa<span class="text-brand-400">Pulse</span>
-          </span>
-        </a>
+        <span class="text-lg font-bold font-mono tracking-tight text-white">
+          Sapa<span class="text-brand-400">Pulse</span>
+        </span>
       </div>
 
       <div class="flex items-center gap-2 sm:gap-3">
-        <!-- Documentation Link Button -->
-        <a href="SapaPulse_Documentation.html" target="_blank" class="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition flex items-center gap-1.5">
-          <i class="fa-solid fa-book text-brand-400"></i>
-          <span class="hidden sm:inline">Docs</span>
-        </a>
-
         <button onclick="toggle3DEffects()" class="px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800/80 text-xs font-mono text-brand-400 hover:bg-slate-700 transition">
           <i class="fa-solid fa-cube sm:mr-1"></i><span class="hidden sm:inline">3D: </span><span id="landing3DLabel" class="font-bold">ON</span>
         </button>
-        
         <button onclick="launchApp('tracker')" class="px-3 sm:px-4 py-1.5 sm:py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-semibold font-mono transition shadow-lg shadow-brand-500/20 flex items-center gap-1">
           <span>Open App</span> <i class="fa-solid fa-arrow-right text-[11px]"></i>
         </button>
@@ -191,21 +182,15 @@
         </p>
       </div>
 
-      <!-- Main Action Buttons Row -->
+      <!-- Main CTA Button -->
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2">
         <button onclick="launchApp('tracker')" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-brand-600 via-brand-500 to-emerald-400 hover:brightness-110 text-white font-bold rounded-2xl text-sm font-mono transition shadow-xl shadow-brand-500/25 flex items-center justify-center gap-3 group">
           <span>Launch Budget Calculator</span>
           <i class="fa-solid fa-calculator group-hover:translate-x-1 transition-transform"></i>
         </button>
-        
         <button onclick="launchApp('advisor')" class="w-full sm:w-auto px-6 py-4 rounded-2xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition flex items-center justify-center gap-2">
           <i class="fa-solid fa-brain text-accent-cyan"></i> Ask SapaAI Advisor
         </button>
-
-        <!-- Read Full Documentation Button -->
-        <a href="SapaPulse_Documentation.html" target="_blank" class="w-full sm:w-auto px-6 py-4 rounded-2xl border border-brand-500/30 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 font-semibold text-sm font-mono transition flex items-center justify-center gap-2">
-          <i class="fa-solid fa-file-lines"></i> View Docs
-        </a>
       </div>
 
       <!-- Feature Grid -->
@@ -244,11 +229,8 @@
       </div>
     </main>
 
-    <footer class="w-full max-w-7xl mx-auto px-4 py-6 text-center text-xs text-slate-500 font-mono border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <span>SapaPulse AI &middot; Spatial Campus Finance Engine</span>
-      <a href="SapaPulse_Documentation.html" target="_blank" class="text-brand-400 hover:underline flex items-center gap-1">
-        <i class="fa-solid fa-book-open"></i> Technical Documentation & Guide
-      </a>
+    <footer class="w-full max-w-7xl mx-auto px-4 py-6 text-center text-xs text-slate-500 font-mono border-t border-slate-800/80">
+      SapaPulse AI &middot; Spatial Campus Finance Engine
     </footer>
   </div>
 
@@ -267,7 +249,7 @@
             <i class="fa-solid fa-shield-halved text-white text-sm sm:text-lg"></i>
           </button>
           <div>
-            <div class="flex items-center gap-1.5 cursor-pointer" title="Return to Overview" onclick="returnToLanding()">
+            <div class="flex items-center gap-1.5">
               <h1 class="text-sm sm:text-base lg:text-lg font-extrabold text-white tracking-tight font-mono">
                 SAPAPULSE
               </h1>
@@ -303,12 +285,6 @@
         <!-- Right Side Utility Controls -->
         <div class="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
           
-          <!-- Docs Quick Link -->
-          <!-- <a href="SapaPulse_Documentation.html" target="_blank" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-xs font-semibold font-mono transition flex items-center gap-1.5" title="Read Technical Documentation">
-            <i class="fa-solid fa-file-lines text-brand-400 text-xs"></i>
-            <span class="hidden md:inline">Docs</span>
-          </a> -->
-
           <!-- Reset Budget Button -->
           <button onclick="resetEntireBudgetPlan()" class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-semibold font-mono transition flex items-center gap-1.5" title="Reset All Data">
             <i class="fa-solid fa-rotate-left text-xs"></i>

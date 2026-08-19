@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SapaPulse AI - Official Technical Documentation & User Guide</title>
+  
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #059669;
+      --primary-dark: #064e3b;
+      --primary-light: #10b981;
+      --accent-cyan: #0891b2;
+      --accent-amber: #d97706;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-color: #e2e8f0;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-mono: 'Space Grotesk', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.65;
+      font-size: 14.5px;
+      padding: 40px 20px;
+    }
+
+    .doc-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 50px 60px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Print / PDF Controls Header */
+    .download-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0f172a;
+      color: #fff;
+      padding: 16px 24px;
+      border-radius: 12px;
+      margin-bottom: 40px;
+    }
+
+    .download-bar button {
+      background: var(--primary-light);
+      color: #064e3b;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .download-bar button:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    /* Document Header */
+    .doc-header {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 30px;
+      margin-bottom: 35px;
+    }
+
+    .brand-title {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-title span {
+      color: var(--primary);
+    }
+
+    .doc-subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-top: 25px;
+      padding: 15px 20px;
+      background: #f1f5f9;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    .meta-item strong {
+      display: block;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+
+    /* Typography & Sections */
+    h2 {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 35px 0 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 22px 0 10px;
+    }
+
+    p {
+      margin-bottom: 14px;
+      color: #334155;
+    }
+
+    ul, ol {
+      margin: 10px 0 18px 24px;
+      color: #334155;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Structured Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13.5px;
+    }
+
+    table th, table td {
+      border: 1px solid var(--border-color);
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    table th {
+      background: #f8fafc;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    /* Code Blocks & Formulas */
+    .formula-box {
+      background: #0f172a;
+      color: #34d399;
+      font-family: var(--font-mono);
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin: 15px 0;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+    .badge-primary { background: #d1fae5; color: #065f46; }
+    .badge-accent { background: #e0f2fe; color: #0369a1; }
+
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: #f0fdf4;
+      padding: 15px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+      font-size: 13.5px;
+    }
+
+    /* Print Styles (PDF Export Optimization) */
+    @media print {
+      body {
+        padding: 0;
+        background: #fff;
+      }
+      .download-bar {
+        display: none !important;
+      }
+      .doc-container {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      h2 {
+        page-break-after: avoid;
+      }
+      table, .formula-box, .callout {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="doc-container">
+    
+    <!-- Top Action Bar (Auto-Hidden in Print) -->
+    <div class="download-bar">
+      <div>
+        <h4 style="font-family: var(--font-mono); font-size: 14px;">Official Technical Dossier</h4>
+        <p style="font-size: 11px; color: #94a3b8; margin: 0;">Ready for immediate submission or archiving.</p>
+      </div>
+      <button onclick="window.print()">
+        <i class="fa-solid fa-file-pdf"></i> Download as PDF
+      </button>
+    </div>
+
+    <!-- Document Header -->
+    <header class="doc-header">
+      <div class="brand-title">
+        <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+        SAPAPULSE <span>AI</span>
+      </div>
+      <p class="doc-subtitle">Campus Financial Intelligence, Survival Matrix & Expense Allocator</p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <strong>Document Version</strong>
+          v7.0 (Production Release)
+        </div>
+        <div class="meta-item">
+          <strong>Target Demographic</strong>
+          Nigerian Tertiary Students
+        </div>
+        <div class="meta-item">
+          <strong>Architecture</strong>
+          Client-Side Single File Web Engine
+        </div>
+        <div class="meta-item">
+          <strong>Storage Layer</strong>
+          HTML5 Browser LocalStorage
+        </div>
+      </div>
+    </header>
+
+    <!-- SECTION 1: EXECUTIVE SUMMARY -->
+    <section>
+      <h2><i class="fa-solid fa-compass"></i> 1. Executive Summary & Problem Space</h2>
+      <p>
+        Nigerian tertiary institution students face distinct economic pressures that standard personal finance tools fail to address:
+      </p>
+      <ul>
+        <li><strong>Volatile Staple Inflation:</strong> Daily fluctuations in the price of foodstuff (Garri, Cooking Gas, Rice, Eggs) render monthly static budgets inaccurate.</li>
+        <li><strong>Surprise Off-Campus Overheads:</strong> Irregular compulsory utility dues such as generator fuel levies, NEPA prepaid unit pooling, and water pumping maintenance.</li>
+        <li><strong>The "Mama-Put" Dilemma:</strong> Students overspend by relying on canteen meals due to lack of planning, despite bulk cooking offering savings upwards of 35%.</li>
+        <li><strong>Premature Allowance Depletion:</strong> Absence of real-time daily spend ceilings leads to sudden mid-semester financial insolvency (commonly referred to as <em>"Sapa"</em>).</li>
+      </ul>
+      <div class="callout">
+        <strong>Project Vision:</strong> SapaPulse AI provides a localized, zero-latency, zero-backend financial engine that computes safe daily burn limits, simulates food prep savings, manages hostel bill pooling, and tracks inflation metrics locally.
+      </div>
+    </section>
+
+    <!-- SECTION 2: TECHNICAL ARCHITECTURE -->
+    <section>
+      <h2><i class="fa-solid fa-microchip"></i> 2. Technical Stack & Architecture</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Technology</th>
+            <th>Operational Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>UI & Structure</strong></td>
+            <td>Semantic HTML5 + Tailwind CSS</td>
+            <td>Fully responsive layout, glassmorphism CSS backdrop filters, accessible modals.</td>
+          </tr>
+          <tr>
+            <td><strong>Computation</strong></td>
+            <td>Vanilla JavaScript (ES6+)</td>
+            <td>State calculations, dynamic DOM mutations, JSON database schema handling.</td>
+          </tr>
+          <tr>
+            <td><strong>State Persistence</strong></td>
+            <td>Browser LocalStorage API</td>
+            <td>Zero-backend relational client database across four core namespaces.</td>
+          </tr>
+          <tr>
+            <td><strong>Visualization</strong></td>
+            <td>Chart.js (CDN)</td>
+            <td>Interactive doughnut chart tracking category spend distribution.</td>
+          </tr>
+          <tr>
+            <td><strong>Spatial FX</strong></td>
+            <td>Three.js (WebGL Canvas)</td>
+            <td>Hardware-accelerated particle background responding to cursor coordinates.</td>
+          </tr>
+          <tr>
+            <td><strong>Audio Engine</strong></td>
+            <td>Web Audio API</td>
+            <td>Synthetic frequency chimes for UI tactile feedback without external media files.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SECTION 3: MATHEMATICAL MODELS & FORMULAS -->
+    <section>
+      <h2><i class="fa-solid fa-calculator"></i> 3. Mathematical Models & Algorithms</h2>
+      <p>SapaPulse AI executes real-time updates across multiple financial indexes:</p>
+      
+      <h3>3.1 Net Safe Balance & Safe Daily Limit</h3>
+      <div class="formula-box">
+Net_Balance = (Total_Allowance - Fixed_Hostel_Dues) - Total_Logged_Expenses
+Safe_Daily_Limit = Net_Balance / Remaining_Days
+      </div>
+
+      <h3>3.2 Garri Emergency Runway Index</h3>
+      <p>Computes survival runway days if non-essential spending is frozen, benchmarked against standard emergency staple sustenance (₦1,000/day):</p>
+      <div class="formula-box">
+Runway_Days = Floor(Net_Balance / 1000)
+      </div>
+
+      <h3>3.3 Cook vs. Buy Comparative Forecasting</h3>
+      <div class="formula-box">
+Total_MamaPut_Cost = Daily_Canteen_Spend × Forecast_Days
+Pots_Required = Ceiling(Forecast_Days / Pot_Duration_Days)
+Total_Cooking_Cost = Pots_Required × Cost_Per_Pot
+Net_Savings = Total_MamaPut_Cost - Total_Cooking_Cost
+      </div>
+    </section>
+
+    <!-- SECTION 4: CORE MODULES & FEATURES -->
+    <section>
+      <h2><i class="fa-solid fa-layer-group"></i> 4. Functional Modules Breakdown</h2>
+      
+      <h3>4.1 Budget Space (Core Ledger & Matrix)</h3>
+      <ul>
+        <li><strong>Allowance Calibration:</strong> Sets total funds, duration, and reserve dues.</li>
+        <li><strong>Instant Spend Deductor:</strong> Logs transactions with immediate re-indexing across 7 campus categories.</li>
+        <li><strong>Transaction Ledger:</strong> Searchable, filterable list with CSV data export and individual item deletion.</li>
+      </ul>
+
+      <h3>4.2 Ask SapaAI (Context-Aware Advisor)</h3>
+      <ul>
+        <li>Reads live telemetry (Burn Rate %, Days Remaining, Safe Daily Cap) to produce recommendations:
+          <ul>
+            <li><em>Critical Level (&gt;70% burned):</em> Imposes immediate canteen spending freeze.</li>
+            <li><em>Food Strategy:</em> Guides bulk soup pot preparations and municipal wholesale markets.</li>
+            <li><em>Priority Cost Cutters:</em> Recommends midnight data bundles and PDF course-pack pooling.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>4.3 Hostel Pool & Utility Splitter</h3>
+      <ul>
+        <li>Divides communal expenses (e.g., generator fuel, NEPA units) among roommates.</li>
+        <li>Generates formatted receipts with automatic dispatching to WhatsApp group chats.</li>
+      </ul>
+
+      <h3>4.4 Campus Market Inflation Radar</h3>
+      <ul>
+        <li>Provides regional price benchmarks (Garri, Cooking Gas, Eggs).</li>
+        <li>Includes a crowdsourcing logging mechanism to store local campus market rates.</li>
+      </ul>
+
+      <h3>4.5 Emergency S.O.S Modal</h3>
+      <ul>
+        <li>Generates a transparent financial deficit breakdown to copy or send directly to guardians via WhatsApp.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 5: USER OPERATIONAL GUIDE -->
+    <section>
+      <h2><i class="fa-solid fa-book-open"></i> 5. Step-by-Step User Operational Guide</h2>
+      <ol>
+        <li><strong>Step 1: Access the Application:</strong> Launch <code>index.html</code> in any modern browser. Click <strong>Launch Budget Calculator</strong> on the landing page.</li>
+        <li><strong>Step 2: Calibrate Initial Budget:</strong> Under <em>Setup Allowance</em> in Tab 1, enter your Total Pocket Money (e.g., ₦60,000), Days (e.g., 30), and Reserve Dues (e.g., ₦6,000). Click <strong>Calibrate Budget Matrix</strong>.</li>
+        <li><strong>Step 3: Log Daily Expenses:</strong> As purchases occur (e.g., Handouts, Canteen Meals), enter the description, amount, and category in the <em>Deduct Instant Spend</em> form and submit.</li>
+        <li><strong>Step 4: Resolve Communal Bills:</strong> Switch to the <strong>Hostel Pool</strong> tab, input the bill details and roommate names, then click <strong>Share Receipt to WhatsApp Group</strong>.</li>
+        <li><strong>Step 5: Exporting & Resetting:</strong> Export your transaction history at any time using the <strong>Export CSV</strong> button, or click <strong>Reset</strong> in the navigation header to clear all stored browser data.</li>
+      </ol>
+    </section>
+
+    <!-- SECTION 6: DATA PRIVACY & STORAGE SPECIFICATION -->
+    <section>
+      <h2><i class="fa-solid fa-lock"></i> 6. Privacy & Storage Specifications</h2>
+      <p>
+        SapaPulse AI adheres to a strict client-side data privacy policy:
+      </p>
+      <ul>
+        <li><strong>Zero Remote Servers:</strong> Financial figures, personal names, and ledger histories remain exclusively in the user's browser.</li>
+        <li><strong>Storage Namespaces:</strong>
+          <ul>
+            <li><code>sp_v7_budget</code> — Stores allowance, planned days, and dues reserve.</li>
+            <li><code>sp_v7_ledger</code> — Stores historical transaction records.</li>
+            <li><code>sp_v7_3d_state</code> — Retains user preference for 3D graphics.</li>
+            <li><code>sp_v7_radar_data</code> — Caches local market benchmark prices.</li>
+          </ul>
+        </li>
+        <li><strong>Data Portability:</strong> Users retain full ownership with unencrypted CSV export and instant data purge options.</li>
+      </ul>
+    </section>
+
+    <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); text-align: center;">
+      SapaPulse AI &middot; Official Project Documentation & Architecture Dossier &middot; Open Academic Release
+    </footer>
+
+  </div>
+
+</body>
+</html>
