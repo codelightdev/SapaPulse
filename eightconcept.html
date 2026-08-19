@@ -143,9 +143,9 @@
   <div id="sectionLanding" class="view-transition flex-1 flex flex-col justify-between">
     
     <!-- Landing Navigation -->
-    <header class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex items-center justify-between">
+    <header class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="h-10 w-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-accent-cyan flex items-center justify-center shadow-lg shadow-brand-500/20 flex-shrink-0">
+        <div class="h-10 w-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-accent-cyan flex items-center justify-center shadow-lg shadow-brand-500/20">
           <i class="fa-solid fa-shield-halved text-white text-base"></i>
         </div>
         <span class="text-lg font-bold font-mono tracking-tight text-white">
@@ -153,18 +153,18 @@
         </span>
       </div>
 
-      <div class="flex items-center gap-2 sm:gap-3">
-        <button onclick="toggle3DEffects()" class="px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800/80 text-xs font-mono text-brand-400 hover:bg-slate-700 transition">
-          <i class="fa-solid fa-cube sm:mr-1"></i><span class="hidden sm:inline">3D: </span><span id="landing3DLabel" class="font-bold">ON</span>
+      <div class="flex items-center gap-3">
+        <button onclick="toggle3DEffects()" class="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800/80 text-xs font-mono text-brand-400 hover:bg-slate-700 transition">
+          <i class="fa-solid fa-cube mr-1"></i>3D: <span id="landing3DLabel" class="font-bold">ON</span>
         </button>
-        <button onclick="launchApp('tracker')" class="px-3 sm:px-4 py-1.5 sm:py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-semibold font-mono transition shadow-lg shadow-brand-500/20 flex items-center gap-1">
-          <span>Open App</span> <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        <button onclick="launchApp('tracker')" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-semibold font-mono transition shadow-lg shadow-brand-500/20">
+          Open App <i class="fa-solid fa-arrow-right ml-1"></i>
         </button>
       </div>
     </header>
 
     <!-- Hero Content -->
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 text-center my-auto py-8 sm:py-12 space-y-6 sm:space-y-8">
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 text-center my-auto py-12 space-y-8">
       
       <!-- Live Status Pill -->
       <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-brand-500/30 bg-brand-500/10 text-brand-400 text-xs font-mono">
@@ -183,7 +183,7 @@
       </div>
 
       <!-- Main CTA Button -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
         <button onclick="launchApp('tracker')" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-brand-600 via-brand-500 to-emerald-400 hover:brightness-110 text-white font-bold rounded-2xl text-sm font-mono transition shadow-xl shadow-brand-500/25 flex items-center justify-center gap-3 group">
           <span>Launch Budget Calculator</span>
           <i class="fa-solid fa-calculator group-hover:translate-x-1 transition-transform"></i>
@@ -194,9 +194,9 @@
       </div>
 
       <!-- Feature Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 pt-6 sm:pt-8 text-left">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-8 text-left">
         
-        <div class="spatial-card p-5 sm:p-6 rounded-2xl space-y-2.5">
+        <div class="spatial-card p-6 rounded-2xl space-y-2.5">
           <div class="h-10 w-10 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 text-base">
             <i class="fa-solid fa-wallet"></i>
           </div>
@@ -206,7 +206,7 @@
           </p>
         </div>
 
-        <div class="spatial-card p-5 sm:p-6 rounded-2xl space-y-2.5">
+        <div class="spatial-card p-6 rounded-2xl space-y-2.5">
           <div class="h-10 w-10 rounded-xl bg-accent-cyan/10 border border-accent-cyan/20 flex items-center justify-center text-accent-cyan text-base">
             <i class="fa-solid fa-utensils"></i>
           </div>
@@ -216,7 +216,7 @@
           </p>
         </div>
 
-        <div class="spatial-card p-5 sm:p-6 rounded-2xl space-y-2.5">
+        <div class="spatial-card p-6 rounded-2xl space-y-2.5">
           <div class="h-10 w-10 rounded-xl bg-accent-violet/10 border border-accent-violet/20 flex items-center justify-center text-accent-violet text-base">
             <i class="fa-solid fa-people-group"></i>
           </div>
@@ -239,138 +239,125 @@
   <!-- ========================================================================= -->
   <div id="sectionApp" class="view-transition hidden flex-1 flex flex-col justify-between pb-24 lg:pb-8">
     
-    <!-- Ultra-Responsive Workspace Header -->
-    <header class="sticky top-0 z-40 border-b border-slate-800/80 bg-[#050914]/90 backdrop-blur-xl transition-all">
-      <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
+    <!-- Workspace Header Navigation -->
+    <header class="sticky top-0 z-40 border-b border-slate-800/80 bg-[#050914]/90 backdrop-blur-xl">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
-        <!-- Brand Logo & Back to Home (Flex-shrink-0 keeps it from collapsing) -->
-        <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-          <button onclick="returnToLanding()" class="h-9 w-9 sm:h-11 sm:w-11 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-brand-600 via-accent-cyan to-accent-violet flex items-center justify-center shadow-lg shadow-brand-500/20 hover:scale-105 transition" title="Return to Overview">
-            <i class="fa-solid fa-shield-halved text-white text-sm sm:text-lg"></i>
+        <!-- Brand Logo & Back to Home -->
+        <div class="flex items-center gap-3.5">
+          <button onclick="returnToLanding()" class="h-11 w-11 rounded-2xl bg-gradient-to-tr from-brand-600 via-accent-cyan to-accent-violet flex items-center justify-center shadow-lg shadow-brand-500/20 hover:scale-105 transition flex-shrink-0" title="Return to Landing Page">
+            <i class="fa-solid fa-shield-halved text-white text-lg"></i>
           </button>
           <div>
-            <div class="flex items-center gap-1.5">
-              <h1 class="text-sm sm:text-base lg:text-lg font-extrabold text-white tracking-tight font-mono">
-                SAPAPULSE
-              </h1>
-              <span class="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded bg-brand-500/20 text-brand-400 border border-brand-500/30 font-mono font-bold">
-                PRO
-              </span>
-            </div>
-            <button onclick="returnToLanding()" class="text-[10px] sm:text-xs text-slate-400 hover:text-brand-400 transition flex items-center gap-1 -mt-0.5">
-              <i class="fa-solid fa-arrow-left text-[9px]"></i> <span class="hidden xs:inline">Overview</span>
+            <h1 class="text-lg font-extrabold text-white tracking-tight font-mono flex items-center gap-2">
+              SAPAPULSE <span class="text-[10px] px-2 py-0.5 rounded bg-brand-500/20 text-brand-400 border border-brand-500/30">AI PRO</span>
+            </h1>
+            <button onclick="returnToLanding()" class="text-xs text-slate-400 hover:text-brand-400 transition flex items-center gap-1">
+              <i class="fa-solid fa-arrow-left text-[10px]"></i> Back to Overview
             </button>
           </div>
         </div>
 
-        <!-- Desktop Navigation Tabs (Adaptive viewports) -->
-        <nav class="hidden lg:flex items-center gap-1 xl:gap-1.5 bg-slate-900/90 p-1 sm:p-1.5 rounded-2xl border border-slate-800 text-xs flex-shrink-0">
-          <button onclick="switchTab('tracker')" id="tabBtn-tracker" class="px-3 xl:px-4 py-2 rounded-xl font-semibold bg-brand-500 text-white shadow-lg transition flex items-center gap-1.5 xl:gap-2">
-            <i class="fa-solid fa-wallet text-sm"></i> <span class="hidden xl:inline">Budget Space</span><span class="xl:hidden">Budget</span>
+        <!-- Desktop Navigation Tabs -->
+        <nav class="hidden lg:flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 text-xs">
+          <button onclick="switchTab('tracker')" id="tabBtn-tracker" class="px-4 py-2 rounded-xl font-semibold bg-brand-500 text-white shadow-lg transition flex items-center gap-2">
+            <i class="fa-solid fa-wallet text-sm"></i> <span>Budget Space</span>
           </button>
-          <button onclick="switchTab('advisor')" id="tabBtn-advisor" class="px-3 xl:px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 xl:gap-2">
-            <i class="fa-solid fa-brain text-accent-cyan text-sm"></i> <span class="hidden xl:inline">Ask SapaAI</span><span class="xl:hidden">SapaAI</span>
+          <button onclick="switchTab('advisor')" id="tabBtn-advisor" class="px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white transition flex items-center gap-2">
+            <i class="fa-solid fa-brain text-accent-cyan text-sm"></i> <span>Ask SapaAI</span>
           </button>
-          <button onclick="switchTab('simulator')" id="tabBtn-simulator" class="px-3 xl:px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 xl:gap-2">
-            <i class="fa-solid fa-utensils text-accent-amber text-sm"></i> <span class="hidden xl:inline">Cook vs Buy</span><span class="xl:hidden">Simulator</span>
+          <button onclick="switchTab('simulator')" id="tabBtn-simulator" class="px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white transition flex items-center gap-2">
+            <i class="fa-solid fa-utensils text-accent-amber text-sm"></i> <span>Cook vs Buy</span>
           </button>
-          <button onclick="switchTab('splitter')" id="tabBtn-splitter" class="px-3 xl:px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 xl:gap-2">
-            <i class="fa-solid fa-people-group text-accent-violet text-sm"></i> <span class="hidden xl:inline">Hostel Pool</span><span class="xl:hidden">Pool</span>
+          <button onclick="switchTab('splitter')" id="tabBtn-splitter" class="px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white transition flex items-center gap-2">
+            <i class="fa-solid fa-people-group text-accent-violet text-sm"></i> <span>Hostel Pool</span>
           </button>
-          <button onclick="switchTab('market')" id="tabBtn-market" class="px-3 xl:px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 xl:gap-2">
-            <i class="fa-solid fa-store text-emerald-400 text-sm"></i> <span class="hidden xl:inline">Market Radar</span><span class="xl:hidden">Radar</span>
+          <button onclick="switchTab('market')" id="tabBtn-market" class="px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white transition flex items-center gap-2">
+            <i class="fa-solid fa-store text-emerald-400 text-sm"></i> <span>Market Radar</span>
           </button>
         </nav>
 
-        <!-- Right Side Utility Controls -->
-        <div class="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
-          
-          <!-- Reset Budget Button -->
-          <button onclick="resetEntireBudgetPlan()" class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-semibold font-mono transition flex items-center gap-1.5" title="Reset All Data">
-            <i class="fa-solid fa-rotate-left text-xs"></i>
-            <span class="hidden md:inline">Reset</span>
+        <!-- Action Utility Controls -->
+        <div class="flex items-center gap-2.5">
+          <button onclick="resetEntireBudgetPlan()" class="px-3.5 py-2 rounded-xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-semibold font-mono transition flex items-center gap-1.5" title="Reset All Data and Clear Storage">
+            <i class="fa-solid fa-rotate-left"></i>
+            <span class="hidden sm:inline">Reset</span>
           </button>
 
-          <!-- 3D Toggle Button -->
-          <button onclick="toggle3DEffects()" id="btnToggle3D" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-slate-700 bg-slate-800/80 text-xs font-mono text-brand-400 hover:bg-slate-700 transition flex items-center gap-1" title="Toggle 3D Ambient FX">
-            <i class="fa-solid fa-cube text-xs"></i>
-            <span class="hidden sm:inline">3D:</span>
-            <span id="app3DLabel" class="font-bold">ON</span>
+          <button onclick="toggle3DEffects()" id="btnToggle3D" class="px-3 py-2 rounded-xl border border-slate-700 bg-slate-800/80 text-xs font-mono text-brand-400 hover:bg-slate-700 transition" title="Toggle 3D FX">
+            <i class="fa-solid fa-cube mr-1"></i>3D: <span id="app3DLabel" class="font-bold">ON</span>
           </button>
 
-          <!-- SOS Runway Trigger Button -->
-          <button onclick="openSosModal()" class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 text-xs font-bold font-mono transition flex items-center gap-1.5">
-            <i class="fa-solid fa-triangle-exclamation animate-pulse text-xs"></i>
-            <span>S.O.S</span>
+          <button onclick="openSosModal()" class="px-3.5 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 text-xs font-bold font-mono transition flex items-center gap-1.5">
+            <i class="fa-solid fa-triangle-exclamation animate-pulse"></i> S.O.S
           </button>
-
         </div>
 
       </div>
     </header>
 
-    <!-- Mobile / Tablet Bottom Tab Navigation Bar -->
-    <div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#070d1d]/95 backdrop-blur-xl border-t border-slate-800 px-2 py-1.5 flex justify-around items-center">
-      <button onclick="switchTab('tracker')" id="mobBtn-tracker" class="flex flex-col items-center gap-0.5 text-brand-400 text-[10px] font-medium p-1 transition">
-        <i class="fa-solid fa-wallet text-sm"></i> <span>Budget</span>
+    <!-- Mobile Bottom Tab Navigation -->
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#070d1d]/95 backdrop-blur-lg border-t border-slate-800 px-3 py-2 flex justify-around items-center">
+      <button onclick="switchTab('tracker')" id="mobBtn-tracker" class="flex flex-col items-center gap-1 text-brand-400 text-[11px] font-medium p-1">
+        <i class="fa-solid fa-wallet text-base"></i> Budget
       </button>
-      <button onclick="switchTab('advisor')" id="mobBtn-advisor" class="flex flex-col items-center gap-0.5 text-slate-400 text-[10px] font-medium p-1 transition">
-        <i class="fa-solid fa-brain text-sm"></i> <span>SapaAI</span>
+      <button onclick="switchTab('advisor')" id="mobBtn-advisor" class="flex flex-col items-center gap-1 text-slate-400 text-[11px] font-medium p-1">
+        <i class="fa-solid fa-brain text-base"></i> SapaAI
       </button>
-      <button onclick="switchTab('simulator')" id="mobBtn-simulator" class="flex flex-col items-center gap-0.5 text-slate-400 text-[10px] font-medium p-1 transition">
-        <i class="fa-solid fa-utensils text-sm"></i> <span>Cook vs Buy</span>
+      <button onclick="switchTab('simulator')" id="mobBtn-simulator" class="flex flex-col items-center gap-1 text-slate-400 text-[11px] font-medium p-1">
+        <i class="fa-solid fa-utensils text-base"></i> Simulator
       </button>
-      <button onclick="switchTab('splitter')" id="mobBtn-splitter" class="flex flex-col items-center gap-0.5 text-slate-400 text-[10px] font-medium p-1 transition">
-        <i class="fa-solid fa-people-group text-sm"></i> <span>Pool</span>
+      <button onclick="switchTab('splitter')" id="mobBtn-splitter" class="flex flex-col items-center gap-1 text-slate-400 text-[11px] font-medium p-1">
+        <i class="fa-solid fa-people-group text-base"></i> Pool
       </button>
-      <button onclick="switchTab('market')" id="mobBtn-market" class="flex flex-col items-center gap-0.5 text-slate-400 text-[10px] font-medium p-1 transition">
-        <i class="fa-solid fa-store text-sm"></i> <span>Radar</span>
+      <button onclick="switchTab('market')" id="mobBtn-market" class="flex flex-col items-center gap-1 text-slate-400 text-[11px] font-medium p-1">
+        <i class="fa-solid fa-store text-base"></i> Radar
       </button>
     </div>
 
     <!-- Main Workspace -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full relative">
 
       <!-- ==================== TAB 1: BUDGET SPACE ==================== -->
-      <div id="view-tracker" class="tab-active space-y-6 sm:space-y-8">
+      <div id="view-tracker" class="tab-active space-y-8">
         
         <!-- Metric Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           
-          <div class="spatial-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-brand-400">
+          <div class="spatial-card p-6 rounded-2xl border-l-4 border-l-brand-400">
             <span class="text-slate-400 text-xs font-mono font-semibold uppercase tracking-wider block">Safe Net Balance</span>
-            <div class="text-2xl sm:text-3xl font-extrabold text-white mt-2 sm:mt-3 font-mono" id="kpiBalance">₦0.00</div>
-            <div class="text-xs text-slate-400 mt-1.5 sm:mt-2">Base: <span id="kpiInitial" class="text-slate-200 font-medium">₦0.00</span></div>
+            <div class="text-2xl sm:text-3xl font-extrabold text-white mt-3 font-mono" id="kpiBalance">₦0.00</div>
+            <div class="text-xs text-slate-400 mt-2">Base: <span id="kpiInitial" class="text-slate-200 font-medium">₦0.00</span></div>
           </div>
 
-          <div class="spatial-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-accent-cyan">
+          <div class="spatial-card p-6 rounded-2xl border-l-4 border-l-accent-cyan">
             <span class="text-slate-400 text-xs font-mono font-semibold uppercase tracking-wider block">Daily Safe Limit</span>
-            <div class="text-2xl sm:text-3xl font-extrabold text-accent-cyan mt-2 sm:mt-3 font-mono" id="kpiDailyLimit">₦0.00</div>
-            <div class="text-xs text-slate-400 mt-1.5 sm:mt-2" id="kpiDaysCount">30 Days Planned</div>
+            <div class="text-2xl sm:text-3xl font-extrabold text-accent-cyan mt-3 font-mono" id="kpiDailyLimit">₦0.00</div>
+            <div class="text-xs text-slate-400 mt-2" id="kpiDaysCount">30 Days Planned</div>
           </div>
 
-          <div class="spatial-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-accent-amber">
+          <div class="spatial-card p-6 rounded-2xl border-l-4 border-l-accent-amber">
             <span class="text-slate-400 text-xs font-mono font-semibold uppercase tracking-wider block">Garri Index Runway</span>
-            <div class="text-2xl sm:text-3xl font-extrabold text-accent-amber mt-2 sm:mt-3 font-mono" id="kpiRunway">0 Days</div>
-            <div class="text-xs text-slate-400 mt-1.5 sm:mt-2">Emergency buffer</div>
+            <div class="text-2xl sm:text-3xl font-extrabold text-accent-amber mt-3 font-mono" id="kpiRunway">0 Days</div>
+            <div class="text-xs text-slate-400 mt-2">Emergency buffer</div>
           </div>
 
-          <div class="spatial-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-purple-400">
+          <div class="spatial-card p-6 rounded-2xl border-l-4 border-l-purple-400">
             <span class="text-slate-400 text-xs font-mono font-semibold uppercase tracking-wider block">Burn Velocity</span>
-            <div class="text-2xl sm:text-3xl font-extrabold text-purple-400 mt-2 sm:mt-3 font-mono" id="kpiBurn">0.0%</div>
-            <div class="text-xs text-slate-400 mt-1.5 sm:mt-2" id="kpiStatusBadge">Safe Zone</div>
+            <div class="text-2xl sm:text-3xl font-extrabold text-purple-400 mt-3 font-mono" id="kpiBurn">0.0%</div>
+            <div class="text-xs text-slate-400 mt-2" id="kpiStatusBadge">Safe Zone</div>
           </div>
 
         </div>
 
         <!-- 2-Column Workstation -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           <!-- Left Column: Forms -->
           <div class="lg:col-span-5 space-y-6">
             
             <!-- Setup Form -->
-            <div class="spatial-card p-5 sm:p-7 rounded-3xl space-y-5">
+            <div class="spatial-card p-6 sm:p-7 rounded-3xl space-y-5">
               <div class="flex justify-between items-center pb-2 border-b border-slate-800">
                 <h3 class="text-sm font-bold text-white flex items-center gap-2">
                   <i class="fa-solid fa-sliders text-brand-400"></i> Setup Allowance
@@ -388,7 +375,7 @@
                   <input type="number" id="inTotalBudget" required min="100" placeholder="e.g. 50000" class="w-full px-4 py-3 rounded-xl spatial-input font-mono text-sm">
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-4">
                   <div>
                     <label class="block text-slate-300 font-semibold mb-1.5">Days to Last</label>
                     <input type="number" id="inDays" required min="1" max="180" placeholder="30" class="w-full px-4 py-3 rounded-xl spatial-input font-mono text-sm">
@@ -406,7 +393,7 @@
             </div>
 
             <!-- Deduct Instant Spend -->
-            <div class="spatial-card p-5 sm:p-7 rounded-3xl space-y-5">
+            <div class="spatial-card p-6 sm:p-7 rounded-3xl space-y-5">
               <h3 class="text-sm font-bold text-white pb-2 border-b border-slate-800 flex items-center gap-2">
                 <i class="fa-solid fa-receipt text-accent-cyan"></i> Deduct Instant Spend
               </h3>
@@ -417,7 +404,7 @@
                   <input type="text" id="inExpDesc" required placeholder="e.g. 2 Plates Amala & Goat Meat" class="w-full px-4 py-3 rounded-xl spatial-input text-sm">
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-4">
                   <div>
                     <label class="block text-slate-300 font-semibold mb-1.5">Amount (₦)</label>
                     <input type="number" id="inExpAmount" required min="1" placeholder="1800" class="w-full px-4 py-3 rounded-xl spatial-input font-mono text-sm">
@@ -448,7 +435,7 @@
           <div class="lg:col-span-7 space-y-6">
             
             <!-- Category Donut Chart -->
-            <div class="spatial-card p-5 sm:p-7 rounded-3xl space-y-4">
+            <div class="spatial-card p-6 sm:p-7 rounded-3xl space-y-4">
               <div class="flex justify-between items-center pb-2 border-b border-slate-800">
                 <h3 class="text-sm font-bold text-white flex items-center gap-2">
                   <i class="fa-solid fa-chart-pie text-purple-400"></i> Spend Composition
@@ -462,14 +449,14 @@
 
             <!-- Ledger Table -->
             <div class="spatial-card rounded-3xl overflow-hidden">
-              <div class="p-4 sm:p-6 border-b border-slate-800 flex flex-wrap gap-2 justify-between items-center">
+              <div class="p-5 sm:p-6 border-b border-slate-800 flex justify-between items-center">
                 <h3 class="text-sm font-bold text-white flex items-center gap-2">
                   <i class="fa-solid fa-list-check text-brand-400"></i> Transaction Ledger
                 </h3>
-                <div class="flex items-center gap-2">
-                  <input type="text" id="tableFilter" oninput="renderLedger()" placeholder="Search records..." class="text-xs px-3 py-1.5 sm:py-2 rounded-xl spatial-input w-32 sm:w-44 font-sans">
-                  <button onclick="exportCSV()" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 transition flex items-center gap-1" title="Export CSV">
-                    <i class="fa-solid fa-download text-xs"></i> <span class="hidden sm:inline">Export</span>
+                <div class="flex items-center gap-2.5">
+                  <input type="text" id="tableFilter" oninput="renderLedger()" placeholder="Search records..." class="text-xs px-3 py-2 rounded-xl spatial-input w-36 sm:w-48 font-sans">
+                  <button onclick="exportCSV()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 transition" title="Export CSV">
+                    <i class="fa-solid fa-download mr-1"></i> Export
                   </button>
                 </div>
               </div>
@@ -478,11 +465,11 @@
                 <table class="w-full text-left text-xs">
                   <thead class="bg-slate-900/90 text-slate-400 uppercase font-mono sticky top-0">
                     <tr>
-                      <th class="px-4 sm:px-5 py-3.5">Item</th>
-                      <th class="px-4 sm:px-5 py-3.5">Category</th>
-                      <th class="px-4 sm:px-5 py-3.5">Cost</th>
-                      <th class="px-4 sm:px-5 py-3.5">Date</th>
-                      <th class="px-4 sm:px-5 py-3.5 text-right">Action</th>
+                      <th class="px-5 py-3.5">Item</th>
+                      <th class="px-5 py-3.5">Category</th>
+                      <th class="px-5 py-3.5">Cost</th>
+                      <th class="px-5 py-3.5">Date</th>
+                      <th class="px-5 py-3.5 text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody id="ledgerBody" class="divide-y divide-slate-800/60 text-slate-300">
@@ -502,10 +489,10 @@
 
       <!-- ==================== TAB 2: ASK SAPAAI ADVISOR ==================== -->
       <div id="view-advisor" class="tab-hidden space-y-6 max-w-3xl mx-auto">
-        <div class="spatial-card p-5 sm:p-8 rounded-3xl space-y-6">
+        <div class="spatial-card p-6 sm:p-8 rounded-3xl space-y-6">
           
           <div class="flex items-center gap-3.5 border-b border-slate-800 pb-4">
-            <div class="h-11 w-11 rounded-2xl bg-gradient-to-tr from-accent-cyan to-brand-500 flex items-center justify-center text-white text-lg flex-shrink-0">
+            <div class="h-11 w-11 rounded-2xl bg-gradient-to-tr from-accent-cyan to-brand-500 flex items-center justify-center text-white text-lg">
               <i class="fa-solid fa-brain"></i>
             </div>
             <div>
@@ -529,16 +516,16 @@
             </div>
           </div>
 
-          <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-800 min-h-[140px] flex items-start gap-3.5">
-            <i class="fa-solid fa-robot text-brand-400 text-base mt-1 flex-shrink-0"></i>
+          <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 min-h-[140px] flex items-start gap-3.5">
+            <i class="fa-solid fa-robot text-brand-400 text-base mt-1"></i>
             <div class="text-xs sm:text-sm leading-relaxed text-slate-300 space-y-2" id="aiResponseArea">
               Select a quick question or enter your budget in the Budget Space tab to get real-time recommendations.
             </div>
           </div>
 
-          <form onsubmit="handleCustomAiPrompt(event)" class="flex gap-2 sm:gap-3 pt-2">
-            <input type="text" id="aiCustomPrompt" placeholder="Ask AI (e.g. 'How do I balance groceries with light dues?')" class="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm spatial-input">
-            <button type="submit" class="px-4 sm:px-6 py-2.5 sm:py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition flex-shrink-0">
+          <form onsubmit="handleCustomAiPrompt(event)" class="flex gap-3 pt-2">
+            <input type="text" id="aiCustomPrompt" placeholder="Ask AI (e.g. 'How do I balance groceries with electricity dues?')" class="flex-1 px-4 py-3 rounded-xl text-xs sm:text-sm spatial-input">
+            <button type="submit" class="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition">
               Ask
             </button>
           </form>
@@ -548,7 +535,7 @@
 
       <!-- ==================== TAB 3: COOK VS MAMA-PUT SIMULATOR ==================== -->
       <div id="view-simulator" class="tab-hidden space-y-6 max-w-3xl mx-auto">
-        <div class="spatial-card p-5 sm:p-8 rounded-3xl space-y-6">
+        <div class="spatial-card p-6 sm:p-8 rounded-3xl space-y-6">
           <div class="text-center space-y-2 max-w-md mx-auto">
             <h2 class="text-base sm:text-lg font-bold text-white font-mono">Cook vs. Mama-Put Simulator</h2>
             <p class="text-xs text-slate-400">Calculate direct savings between cooking soup pots and buying canteen meals.</p>
@@ -582,12 +569,12 @@
             </button>
           </form>
 
-          <div id="simResult" class="hidden p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-accent-amber/30 space-y-4">
+          <div id="simResult" class="hidden p-5 rounded-2xl bg-slate-900/90 border border-accent-amber/30 space-y-4">
             <div class="flex justify-between items-center">
               <h4 class="text-xs font-bold text-accent-amber font-mono">Forecast Breakdown</h4>
               <span id="simSavingsBadge" class="text-xs px-3 py-1 rounded-lg bg-brand-500/20 text-brand-400 font-bold font-mono">Save ₦0.00</span>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs font-mono">
+            <div class="grid grid-cols-2 gap-4 text-xs font-mono">
               <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700">
                 <span class="text-slate-400 text-xs block mb-1">Canteen Total:</span>
                 <span class="text-sm sm:text-base font-bold text-red-400" id="simResMamaTotal">₦0.00</span>
@@ -604,7 +591,7 @@
 
       <!-- ==================== TAB 4: HOSTEL POOL SPLITTER ==================== -->
       <div id="view-splitter" class="tab-hidden space-y-6 max-w-3xl mx-auto">
-        <div class="spatial-card p-5 sm:p-8 rounded-3xl space-y-6">
+        <div class="spatial-card p-6 sm:p-8 rounded-3xl space-y-6">
           <div class="text-center space-y-2 max-w-md mx-auto">
             <h2 class="text-base sm:text-lg font-bold text-white font-mono">Hostel Bill & Fuel Splitter</h2>
             <p class="text-xs text-slate-400">Evenly split generator fuel, NEPA units, and bulk food pots.</p>
@@ -637,7 +624,7 @@
             </button>
           </form>
 
-          <div id="poolResult" class="hidden p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-brand-500/30 space-y-4">
+          <div id="poolResult" class="hidden p-5 rounded-2xl bg-slate-900/90 border border-brand-500/30 space-y-4">
             <div class="flex justify-between items-center">
               <h4 class="text-xs font-bold text-brand-400 font-mono" id="resPoolTitle">Split Summary</h4>
               <span class="text-xs px-3 py-1 rounded-lg bg-brand-500/20 text-brand-300 font-mono font-bold" id="resPerPerson">₦0 / person</span>
@@ -652,31 +639,31 @@
 
       <!-- ==================== TAB 5: MARKET RADAR ==================== -->
       <div id="view-market" class="tab-hidden space-y-6 max-w-3xl mx-auto">
-        <div class="spatial-card p-5 sm:p-8 rounded-3xl space-y-6">
+        <div class="spatial-card p-6 sm:p-8 rounded-3xl space-y-6">
           <div class="flex justify-between items-center gap-4 pb-4 border-b border-slate-800">
             <div>
               <h2 class="text-base sm:text-lg font-bold text-white font-mono">Campus Foodstuff Inflation Radar</h2>
               <p class="text-xs text-slate-400">Live staple price benchmarks across Nigerian tertiary institutions.</p>
             </div>
-            <button onclick="syncMarketRadar()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-mono text-brand-400 flex items-center gap-1.5 transition flex-shrink-0">
-              <i class="fa-solid fa-arrows-rotate" id="radarSpinIcon"></i> <span class="hidden sm:inline">Sync Rates</span>
+            <button onclick="syncMarketRadar()" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-mono text-brand-400 flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-arrows-rotate" id="radarSpinIcon"></i> Sync Rates
             </button>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4" id="marketRadarContainer">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="marketRadarContainer">
             <!-- Dynamic JS Injection -->
           </div>
 
-          <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
+          <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
             <span class="text-xs font-bold text-slate-200 block"><i class="fa-solid fa-plus-circle text-brand-400 mr-1.5"></i> Log Local Price (Crowdsource Engine)</span>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               <select id="crowdItem" class="spatial-input px-3 py-2.5 rounded-xl text-xs bg-[#0b1322]">
                 <option value="Garri (Paint Bucket)">Garri (Paint)</option>
                 <option value="Cooking Gas (1kg)">Gas (1kg)</option>
                 <option value="Eggs (Crate of 30)">Eggs (Crate)</option>
               </select>
               <input type="number" id="crowdPrice" placeholder="₦ Price" class="spatial-input px-3 py-2.5 rounded-xl text-xs font-mono">
-              <button onclick="submitCrowdPrice()" class="bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-bold text-xs transition py-2.5">
+              <button onclick="submitCrowdPrice()" class="bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-bold text-xs transition">
                 Log Rate
               </button>
             </div>
@@ -695,7 +682,7 @@
 
   <!-- Centered Emergency S.O.S Modal -->
   <div id="sosModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 hidden">
-    <div class="spatial-card w-full max-w-lg p-5 sm:p-8 rounded-3xl border border-red-500/40 space-y-4 m-auto">
+    <div class="spatial-card w-full max-w-lg p-6 sm:p-8 rounded-3xl border border-red-500/40 space-y-4 m-auto">
       <div class="flex justify-between items-center">
         <h3 class="text-base sm:text-lg font-bold text-red-400 font-mono flex items-center gap-2">
           <i class="fa-solid fa-triangle-exclamation"></i> Emergency S.O.S Runway
@@ -709,11 +696,11 @@
         Polite message summarizing your financial position to copy or send directly via WhatsApp.
       </p>
 
-      <div class="p-3.5 sm:p-4 rounded-xl bg-slate-900/90 border border-slate-800 font-mono text-xs text-slate-300 space-y-1.5" id="sosMessagePreview">
+      <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 font-mono text-xs text-slate-300 space-y-1.5" id="sosMessagePreview">
         <!-- Injected via JavaScript -->
       </div>
 
-      <div class="flex gap-2 sm:gap-3 pt-2">
+      <div class="flex gap-3 pt-2">
         <button onclick="copySosMessage()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1.5 border border-slate-700">
           <i class="fa-solid fa-copy"></i> <span id="btnCopyText">Copy</span>
         </button>
@@ -1122,11 +1109,11 @@
         empty.classList.add('hidden');
         tbody.innerHTML = filtered.map(i => `
           <tr class="hover:bg-slate-800/40 transition">
-            <td class="px-4 sm:px-5 py-3.5 font-medium text-white">${escapeHTML(i.desc)}</td>
-            <td class="px-4 sm:px-5 py-3.5 text-slate-400 text-xs">${i.category}</td>
-            <td class="px-4 sm:px-5 py-3.5 font-mono text-brand-400 font-semibold">₦${i.amount.toLocaleString()}</td>
-            <td class="px-4 sm:px-5 py-3.5 text-slate-500 font-mono text-xs">${i.date}</td>
-            <td class="px-4 sm:px-5 py-3.5 text-right">
+            <td class="px-5 py-3.5 font-medium text-white">${escapeHTML(i.desc)}</td>
+            <td class="px-5 py-3.5 text-slate-400 text-xs">${i.category}</td>
+            <td class="px-5 py-3.5 font-mono text-brand-400 font-semibold">₦${i.amount.toLocaleString()}</td>
+            <td class="px-5 py-3.5 text-slate-500 font-mono text-xs">${i.date}</td>
+            <td class="px-5 py-3.5 text-right">
               <button onclick="deleteExpense(${i.id})" class="text-slate-500 hover:text-red-400 transition" title="Delete record">
                 <i class="fa-solid fa-trash-can"></i>
               </button>
